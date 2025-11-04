@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
+import Navbar from "./components/Navbar";
 
 const poppins = Poppins({
   weight: "400",
@@ -17,7 +18,8 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className={`${poppins.className} antialiased`}>{children}</body>
+      <Navbar />
+      <body className={`${poppins.className} `}>{children}</body>
     </html>
   );
 }
