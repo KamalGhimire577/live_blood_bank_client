@@ -1,38 +1,48 @@
-"use_client"
-
-
 import Link from "next/link";
+import Image from "next/image";
 
-export default function Navbar() {
+export default function Header() {
   return (
     <header className="sticky inset-0 z-50 border-b border-slate-100 bg-white/80 backdrop-blur-lg">
       <nav className="mx-auto flex max-w-6xl gap-8 px-6 transition-all duration-200 ease-in-out lg:px-12 py-4">
         {/* Logo */}
         <div className="relative flex items-center">
           <Link href="/">
-            <a>
-              <img
-                src="https://www.svgrepo.com/show/499831/target.svg"
-                loading="lazy"
-                style={{ color: "transparent" }}
-                width={32}
-                height={32}
-                alt="Logo"
-              />
-            </a>
+            <Image
+              src="/logo.png"
+              alt="Logo"
+              width={32}
+              height={32}
+              className="bg-transparent object-contain"
+            />
           </Link>
         </div>
 
         {/* Desktop Menu */}
         <ul className="hidden items-center justify-center gap-6 md:flex">
-          <li className="pt-1.5 font-dm text-sm font-medium text-slate-700">
-            <Link href="#">Pricing</Link>
+          <li>
+            <Link
+              href="/pricing"
+              className="pt-1.5 font-dm text-sm font-medium text-slate-700"
+            >
+              Pricing
+            </Link>
           </li>
-          <li className="pt-1.5 font-dm text-sm font-medium text-slate-700">
-            <Link href="#">Blog</Link>
+          <li>
+            <Link
+              href="/blog"
+              className="pt-1.5 font-dm text-sm font-medium text-slate-700"
+            >
+              Blog
+            </Link>
           </li>
-          <li className="pt-1.5 font-dm text-sm font-medium text-slate-700">
-            <Link href="#">Docs</Link>
+          <li>
+            <Link
+              href="/docs"
+              className="pt-1.5 font-dm text-sm font-medium text-slate-700"
+            >
+              Docs
+            </Link>
           </li>
         </ul>
 
@@ -40,15 +50,17 @@ export default function Navbar() {
 
         {/* Desktop Actions */}
         <div className="hidden items-center justify-center gap-6 md:flex">
-          <Link href="#">
-            <a className="font-dm text-sm font-medium text-slate-700">
-              Sign in
-            </a>
+          <Link
+            href="/signin"
+            className="font-dm text-sm font-medium text-slate-700"
+          >
+            Sign in
           </Link>
-          <Link href="#">
-            <a className="rounded-md bg-gradient-to-br from-green-600 to-emerald-400 px-3 py-1.5 font-dm text-sm font-medium text-white shadow-md shadow-green-400/50 transition-transform duration-200 ease-in-out hover:scale-[1.03]">
-              Sign up for free
-            </a>
+          <Link
+            href="/signup"
+            className="rounded-md bg-gradient-to-br from-green-600 to-emerald-400 px-3 py-1.5 font-dm text-sm font-medium text-white shadow-md shadow-green-400/50 transition-transform duration-200 ease-in-out hover:scale-[1.03]"
+          >
+            Sign up for free
           </Link>
         </div>
 
