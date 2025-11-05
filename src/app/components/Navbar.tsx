@@ -108,7 +108,7 @@ export default function Navbar() {
           </Link>
           <Link
             href="/signup"
-            className="rounded-md bg-gradient-to-br from-red-400 to-red-500 px-3 py-1 text-sm font-medium text-white shadow-md transition-transform duration-200 ease-in-out hover:scale-[1.03]"
+            className="rounded-md bg-linear-to-br from-red-400 to-red-500 px-3 py-1 text-sm font-medium text-white shadow-md transition-transform duration-200 ease-in-out hover:scale-[1.03]"
           >
             Become a Donor
           </Link>
@@ -220,7 +220,7 @@ export default function Navbar() {
               <Link
                 href="/signup"
                 onClick={() => setMenuOpen(false)}
-                className="rounded-md bg-gradient-to-br from-red-400 to-red-500 px-4 py-1.5 text-sm font-medium text-white shadow-md"
+                className="rounded-md bg-linear-to-br from-red-400 to-red-500 px-4 py-1.5 text-sm font-medium text-white shadow-md"
               >
                 Become a Donor
               </Link>

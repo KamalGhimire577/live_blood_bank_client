@@ -10,7 +10,7 @@ import {
 
 export default function Footer() {
   return (
-    <footer className="bg-gradient-to-br from-rose-700 via-red-700 to-red-600 pt-12 pb-6 text-white">
+    <footer className="bg-linear-to-br from-rose-700 via-red-700 to-red-600 pt-12 pb-6 text-white">
       <div className="mx-auto w-full max-w-6xl px-6">
         {/* Top Section */}
         <div className="flex flex-col md:flex-row justify-between gap-10">
