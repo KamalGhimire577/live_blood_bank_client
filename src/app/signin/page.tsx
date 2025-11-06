@@ -16,7 +16,7 @@ export default function SignIn() {
   return (
     <div className="flex min-h-screen flex-col bg-white">
       <div className="flex flex-1 flex-col items-center justify-center px-6 py-12 lg:px-8">
-        <div className="w-full max-w-sm space-y-8">
+        <div className="w-full max-w-sm space-y-8 p-6 rounded-xl shadow-lg border border-gray-200">
           {/* Logo + Header */}
           <div className="text-center">
             <Image
@@ -29,9 +29,7 @@ export default function SignIn() {
             <h2 className="mt-6 text-2xl font-semibold text-gray-900 sm:text-3xl">
               Login to your account
             </h2>
-            <p className="mt-3 text-base text-gray-600">
-              Welcome back! Please enter your credentials.
-            </p>
+           
           </div>
 
           {/* Form */}
@@ -86,7 +84,7 @@ export default function SignIn() {
                 Remember me
               </label>
               <Link
-                href="#"
+                href="/forgotpassword"
                 className="text-sm font-semibold text-red-500 hover:text-red-400"
               >
                 Forgot password?

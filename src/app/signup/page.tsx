@@ -24,7 +24,7 @@ export default function SignUp() {
   return (
     <div className="flex min-h-screen flex-col bg-white">
       <div className="flex flex-1 flex-col items-center justify-center px-6 py-12 lg:px-8">
-        <div className="w-full max-w-sm space-y-8">
+        <div className="w-full max-w-sm space-y-8 p-6 rounded-xl shadow-lg border border-gray-200">
           <div className="text-center">
             <Image
               src="/logo.png"
@@ -36,12 +36,10 @@ export default function SignUp() {
             <h2 className="mt-6 text-2xl font-semibold text-gray-900 sm:text-3xl">
               Create your account
             </h2>
-            <p className="mt-3 text-base text-gray-600">
-              Join our blood donation community today.
-            </p>
           </div>
 
           <form onSubmit={handleSignup} className="space-y-5">
+            {/* Full Name */}
             <div>
               <label className="block text-sm font-medium text-gray-900">
                 Full Name
@@ -53,10 +51,11 @@ export default function SignUp() {
                 onChange={handleChange}
                 placeholder="Enter your full name"
                 required
-                className="mt-2 w-full rounded-md border-0 bg-white px-3.5 py-2 text-base text-gray-900 shadow-sm ring-1 ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-red-500 sm:text-sm"
+                className="mt-2 w-full rounded-md border border-red-400 bg-white px-3.5 py-2 text-base text-gray-900 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-400 focus:ring-offset-1 focus:ring-offset-blue-100 transition-all duration-200 placeholder:text-gray-400 sm:text-sm"
               />
             </div>
 
+            {/* Email */}
             <div>
               <label className="block text-sm font-medium text-gray-900">
                 Email
@@ -68,10 +67,11 @@ export default function SignUp() {
                 onChange={handleChange}
                 placeholder="Enter your email"
                 required
-                className="mt-2 w-full rounded-md border-0 bg-white px-3.5 py-2 text-base text-gray-900 shadow-sm ring-1 ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-red-500 sm:text-sm"
+                className="mt-2 w-full rounded-md border border-red-400 bg-white px-3.5 py-2 text-base text-gray-900 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-400 focus:ring-offset-1 focus:ring-offset-blue-100 transition-all duration-200 placeholder:text-gray-400 sm:text-sm"
               />
             </div>
 
+            {/* Phone Number */}
             <div>
               <label className="block text-sm font-medium text-gray-900">
                 Phone Number
@@ -84,10 +84,11 @@ export default function SignUp() {
                 placeholder="98XXXXXXXX"
                 pattern="^(98|97)\d{8}$"
                 required
-                className="mt-2 w-full rounded-md border-0 bg-white px-3.5 py-2 text-base text-gray-900 shadow-sm ring-1 ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-red-500 sm:text-sm"
+                className="mt-2 w-full rounded-md border border-red-400 bg-white px-3.5 py-2 text-base text-gray-900 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-400 focus:ring-offset-1 focus:ring-offset-blue-100 transition-all duration-200 placeholder:text-gray-400 sm:text-sm"
               />
             </div>
 
+            {/* Password */}
             <div>
               <label className="block text-sm font-medium text-gray-900">
                 Password
@@ -99,13 +100,14 @@ export default function SignUp() {
                 onChange={handleChange}
                 placeholder="Enter password"
                 required
-                className="mt-2 w-full rounded-md border-0 bg-white px-3.5 py-2 text-base text-gray-900 shadow-sm ring-1 ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-red-500 sm:text-sm"
+                className="mt-2 w-full rounded-md border border-red-400 bg-white px-3.5 py-2 text-base text-gray-900 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-400 focus:ring-offset-1 focus:ring-offset-blue-100 transition-all duration-200 placeholder:text-gray-400 sm:text-sm"
               />
             </div>
 
+            {/* Submit */}
             <button
               type="submit"
-              className="w-full rounded-md bg-linear-to-r from-red-500 to-rose-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:from-rose-500 hover:to-red-400 focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-red-500"
+              className="w-full rounded-md bg-linear-to-r from-red-500 to-rose-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:from-rose-500 hover:to-red-400 focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-red-500 transition-all duration-200"
             >
               Sign Up
             </button>

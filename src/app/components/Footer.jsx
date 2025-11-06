@@ -1,3 +1,4 @@
+import { url } from "inspector";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -10,8 +11,13 @@ import {
 
 export default function Footer() {
   return (
-    <footer className="bg-linear-to-br from-rose-700 via-red-700 to-red-600 pt-12 pb-6 text-white">
-      <div className="mx-auto w-full max-w-6xl px-6">
+    <footer
+      className="pt-12 pb-6 text-white bg-cover bg-center bg-no-repeat"
+      style={{
+        backgroundImage: "url('/footer.png')",
+      }}
+    >
+      <div className="mx-auto w-full max-w-6xl px-6 bg-black/50 rounded-xl p-6">
         {/* Top Section */}
         <div className="flex flex-col md:flex-row justify-between gap-10">
           {/* Logo & About */}
@@ -26,14 +32,14 @@ export default function Footer() {
               />
               <h1 className="text-3xl font-extrabold">
                 <span className="text-white">Live</span>
-                <span className="text-yellow-200">Blood</span>
+                <span className="text-red-400">Blood</span>
                 <span className="text-white">Bank</span>
               </h1>
             </div>
-            <p className="text-white/80 text-sm leading-relaxed">
-              A platform connecting **live blood donors** and **requesters** in
-              real-time. Save lives by donating or requesting blood instantly
-              with verified donors.
+            <p className="text-red-300 text-sm leading-relaxed">
+              A platform connecting <strong>live blood donors</strong> and{" "}
+              <strong>requesters</strong> in real-time. Save lives by donating
+              or requesting blood instantly with verified donors.
             </p>
 
             <div className="mt-5 flex gap-4">
@@ -78,7 +84,7 @@ export default function Footer() {
           {/* Contact Info */}
           <div className="md:w-1/3">
             <h2 className="text-lg font-semibold mb-4">Contact Information</h2>
-            <div className="space-y-4 text-white/90">
+            <div className="space-y-4 text-red-300">
               <div>
                 <p className="font-medium">📞 +977 9800000000</p>
                 <p className="text-sm">Support Number</p>
@@ -97,7 +103,7 @@ export default function Footer() {
           {/* Quick Links & Download */}
           <div className="md:w-1/3">
             <h2 className="text-lg font-semibold mb-4">Quick Links</h2>
-            <ul className="space-y-3 text-white/90">
+            <ul className="space-y-3 text-red-300">
               <li>
                 <Link href="/" className="hover:text-yellow-200">
                   Home

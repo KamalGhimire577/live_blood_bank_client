@@ -1,9 +1,10 @@
 import Image from "next/image";
+import DonorCard from "./Components/Card";
 
 export default function Home() {
   return (
     <>
-    <h1>hi broo</h1>
+    <DonorCard /> <DonorCard />
     </>
   );
 }

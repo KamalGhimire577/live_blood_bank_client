@@ -51,7 +51,7 @@ export default function Navbar() {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search donors..."
+              placeholder="Search donors by address..."
               className="w-full rounded-full border border-slate-300 py-1 pl-4 pr-9 text-sm text-slate-700 placeholder-slate-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400"
             />
             <button
@@ -107,7 +107,7 @@ export default function Navbar() {
             Sign In
           </Link>
           <Link
-            href="/signup"
+            href="/donorsignin"
             className="rounded-md bg-linear-to-br from-red-400 to-red-500 px-3 py-1 text-sm font-medium text-white shadow-md transition-transform duration-200 ease-in-out hover:scale-[1.03]"
           >
             Become a Donor
@@ -218,7 +218,7 @@ export default function Navbar() {
             </li>
             <li>
               <Link
-                href="/signup"
+                href="/donorsignup"
                 onClick={() => setMenuOpen(false)}
                 className="rounded-md bg-linear-to-br from-red-400 to-red-500 px-4 py-1.5 text-sm font-medium text-white shadow-md"
               >
