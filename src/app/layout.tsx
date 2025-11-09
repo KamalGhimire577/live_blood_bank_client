@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import Navbar from "./Components/Navbar";
 import Footer from "./Components/Footer"
+import { ReduxProvider } from "@/lib/store/provider";
 const poppins = Poppins({
   weight: "400",
   subsets: ["latin"],
@@ -19,10 +20,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${poppins.className} `}>
-        <Navbar />
+        <ReduxProvider>
+          <Navbar />
 
-        {children}
-        <Footer />
+          {children}
+          <Footer />
+        </ReduxProvider>
       </body>
     </html>
   );

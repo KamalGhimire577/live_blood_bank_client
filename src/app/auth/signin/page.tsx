@@ -2,16 +2,35 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { ISignInData } from "./signin.type";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
+import store from "@/lib/store/store";
+import { loginUser } from "@/lib/store/auth/authSlice";
 
 export default function SignIn() {
-  const [identifier, setIdentifier] = useState("");
-  const [password, setPassword] = useState("");
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Login:", { identifier, password });
-    // TODO: Add API call here (email OR phone allowed)
+  const dispatch = useAppDispatch()
+  const {user} =useAppSelector((store=>store.auth))
+  console.log(user,"data user ma xa !!")
+  const [formData, setFormData] = useState<ISignInData>({
+    phoneNumber: "",
+    password: "",
+  });
+
+
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
+    
+  const handleLogin = (e: React.FormEvent) => {
+      e.preventDefault();
+      //console.log("Login data:", formData);
+      // TODO: Add API call here (phoneNumber OR email allowed)
+      dispatch (loginUser(formData))
+
+    };
 
   return (
     <div className="flex min-h-screen flex-col bg-white">
@@ -29,7 +48,6 @@ export default function SignIn() {
             <h2 className="mt-6 text-2xl font-semibold text-gray-900 sm:text-3xl">
               Login to your account
             </h2>
-           
           </div>
 
           {/* Form */}
@@ -37,18 +55,18 @@ export default function SignIn() {
             <div className="space-y-5">
               <div>
                 <label
-                  htmlFor="identifier"
+                  htmlFor="phoneNumber"
                   className="block text-sm font-medium text-gray-900"
                 >
-                  Email or Phone Number
+                  Phone Number
                 </label>
                 <input
-                  id="identifier"
-                  name="identifier"
+                  id="phoneNumber"
+                  name="phoneNumber"
                   type="text"
-                  value={identifier}
-                  onChange={(e) => setIdentifier(e.target.value)}
-                  placeholder="Enter your email or phone"
+                  value={formData.phoneNumber}
+                  onChange={handleChange}
+                  placeholder="Enter your phone number"
                   required
                   className="mt-2 w-full rounded-md border-0 bg-white px-3.5 py-2 text-base text-gray-900 shadow-sm ring-1 ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-red-500 sm:text-sm"
                 />
@@ -65,8 +83,8 @@ export default function SignIn() {
                   id="password"
                   name="password"
                   type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={formData.password}
+                  onChange={handleChange}
                   placeholder="Enter your password"
                   required
                   className="mt-2 w-full rounded-md border-0 bg-white px-3.5 py-2 text-base text-gray-900 shadow-sm ring-1 ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-red-500 sm:text-sm"
@@ -84,7 +102,7 @@ export default function SignIn() {
                 Remember me
               </label>
               <Link
-                href="/forgotpassword"
+                href="/auth/forgotpassword"
                 className="text-sm font-semibold text-red-500 hover:text-red-400"
               >
                 Forgot password?
@@ -102,7 +120,7 @@ export default function SignIn() {
           <p className="text-center text-sm text-gray-500">
             Don’t have an account?{" "}
             <Link
-              href="/signup"
+              href="/auth/signup"
               className="font-semibold text-red-500 hover:text-red-400"
             >
               Sign up

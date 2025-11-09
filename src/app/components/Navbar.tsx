@@ -101,13 +101,13 @@ export default function Navbar() {
         {/* Desktop Actions */}
         <div className="hidden md:flex items-center gap-3">
           <Link
-            href="/signin"
+            href="/auth/signin"
             className="text-sm font-medium text-slate-700 hover:text-red-500"
           >
             Sign In
           </Link>
           <Link
-            href="/donorsignin"
+            href="/auth/donorsignup"
             className="rounded-md bg-linear-to-br from-red-400 to-red-500 px-3 py-1 text-sm font-medium text-white shadow-md transition-transform duration-200 ease-in-out hover:scale-[1.03]"
           >
             Become a Donor
@@ -184,16 +184,16 @@ export default function Navbar() {
             </li>
 
             {/* Links */}
-            {["Home", "Live Donors", "About Us", "Contact Us"].map(
+            {["Home", "Live_Donors", "About_Us", "Contact_Us"].map(
               (item, i) => (
                 <li key={i}>
                   <Link
                     href={
                       item === "Home"
                         ? "/"
-                        : item === "Live Donors"
+                        : item === "Live_Donors"
                         ? "/blog"
-                        : item === "About Us"
+                        : item === "About_Us"
                         ? "/about"
                         : "/contact"
                     }
@@ -209,7 +209,7 @@ export default function Navbar() {
             {/* Actions */}
             <li>
               <Link
-                href="/signin"
+                href="/auth/signin"
                 onClick={() => setMenuOpen(false)}
                 className="text-slate-700 hover:text-red-500"
               >
@@ -218,7 +218,7 @@ export default function Navbar() {
             </li>
             <li>
               <Link
-                href="/donorsignup"
+                href="/auth/donorsignup"
                 onClick={() => setMenuOpen(false)}
                 className="rounded-md bg-linear-to-br from-red-400 to-red-500 px-4 py-1.5 text-sm font-medium text-white shadow-md"
               >
