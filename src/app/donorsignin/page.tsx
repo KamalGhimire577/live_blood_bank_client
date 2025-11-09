@@ -159,7 +159,7 @@ export default function DonorForm() {
               className="mt-1 h-4 w-4 text-red-500 border-gray-300 rounded focus:ring-blue-400"
             />
             <label className="text-sm text-gray-700 leading-tight">
-              ✅ I confirm that I am at least 18 years old and eligible to
+              I confirm that I am at least 18 years old and eligible to
               donate blood.
             </label>
           </div>
