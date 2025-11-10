@@ -4,31 +4,27 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { ISignupData} from "./signup.types";
-import { registerUser } from "@/lib/store/auth/authSlice";
+import { registerUser, setStatus } from "@/lib/store/auth/authSlice";
 import { Status } from "@/lib/types/type";
 import BloodLoader from "./../../Components/BloodLoader"
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 
-
-//first steps
 export default function SignUp() {
   
   const dispatch = useAppDispatch()
   const router = useRouter()
   const { status } = useAppSelector((state) => state.auth)
   const [showSuccessPopup, setShowSuccessPopup] = useState(false)
-  const [formData, setFormData] = useState<ISignupData>
-   
-  ({
+  const [formData, setFormData] = useState<ISignupData>({
     userName: "",
     email: "",
     phoneNumber: "",
     password: "",
   });
 
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleSignup = (e:React.FormEvent< HTMLFormElement>) => {
@@ -40,15 +36,21 @@ export default function SignUp() {
     if (status === Status.SUCCESS) {
       setShowSuccessPopup(true)
       setTimeout(() => {
+        setFormData({
+          userName: "",
+          email: "",
+          phoneNumber: "",
+          password: "",
+        });
+        dispatch(setStatus(Status.IDLE));
         router.push('/auth/signin')
       }, 2000)
     }
-  }, [status, router]);
-  if(status === Status.LOADING){
-    return <BloodLoader />
-  }
-
+  }, [status, router, dispatch]);
   
+  if (status === Status.LOADING) {
+    return <BloodLoader />;
+  }
 
   return (
     <>
@@ -146,9 +148,14 @@ export default function SignUp() {
               {/* Submit */}
               <button
                 type="submit"
-                className="w-full rounded-md bg-linear-to-r from-red-500 to-rose-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:from-rose-500 hover:to-red-400 focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-red-500 transition-all duration-200"
+                disabled={status === Status.LOADING}
+                className={`w-full rounded-md bg-gradient-to-r from-red-600 to-rose-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 ${
+                  status === Status.LOADING
+                    ? "opacity-70 cursor-not-allowed"
+                    : "hover:from-rose-500 hover:to-red-600"
+                }`}
               >
-                Sign Up
+                {status === Status.LOADING ? "Registering..." : "Sign Up"}
               </button>
             </form>
 
