@@ -43,7 +43,7 @@ export function registerUser ( data:IRegisterData){
 
    return async function registerUserThunk (dispatch:AppDispatch){
         try{ 
-          const response = await API.post("auth/register",data)
+          const response = await API.post("auth/signup",data)
           if(response.status===201){
             dispatch(setStatus(Status.SUCCESS))
           }else {
@@ -64,7 +64,7 @@ export function loginUser (data:IUserData){
   
   return async function loginUserThunk(dispatch:AppDispatch) {
     try{
-      const response = await API.post ("auth/login",data);
+      const response = await API.post ("auth/signin",data);
       if(response.status===201){
             dispatch(setStatus(Status.SUCCESS))
           }else {
