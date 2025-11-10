@@ -11,7 +11,7 @@ const initialState:IInitiallState = {
     phoneNumber:"",
     password:""
   },
-  status :Status.LOADING
+  status :Status.IDLE
 
   
 }
@@ -43,6 +43,7 @@ export function registerUser ( data:IRegisterData){
 
    return async function registerUserThunk (dispatch:AppDispatch){
         try{ 
+          dispatch(setStatus(Status.LOADING))
           const response = await API.post("auth/signup",data)
           if(response.status===201){
             dispatch(setStatus(Status.SUCCESS))
@@ -64,8 +65,10 @@ export function loginUser (data:IUserData){
   
   return async function loginUserThunk(dispatch:AppDispatch) {
     try{
+      dispatch(setStatus(Status.LOADING))
       const response = await API.post ("auth/signin",data);
       if(response.status===201){
+            dispatch(setUser(response.formData.user))
             dispatch(setStatus(Status.SUCCESS))
           }else {
             dispatch(setStatus(Status.ERROR))

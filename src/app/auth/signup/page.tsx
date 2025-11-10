@@ -1,19 +1,23 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { ISignupData} from "./signup.types";
 import { registerUser } from "@/lib/store/auth/authSlice";
 import { Status } from "@/lib/types/type";
-
-import { useAppDispatch } from "@/lib/store/hooks";
+import BloodLoader from "./../../Components/BloodLoader"
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 
 
 //first steps
 export default function SignUp() {
   
-  const dispatch  = useAppDispatch ()
-  const [formData, setFormData] = useState <ISignupData>
+  const dispatch = useAppDispatch()
+  const router = useRouter()
+  const { status } = useAppSelector((state) => state.auth)
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false)
+  const [formData, setFormData] = useState<ISignupData>
    
   ({
     userName: "",
@@ -22,6 +26,7 @@ export default function SignUp() {
     password: "",
   });
 
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -29,12 +34,33 @@ export default function SignUp() {
   const handleSignup = (e:React.FormEvent< HTMLFormElement>) => {
     e.preventDefault()
     dispatch(registerUser(formData))
-   
-   
   };
+
+  useEffect(() => {
+    if (status === Status.SUCCESS) {
+      setShowSuccessPopup(true)
+      setTimeout(() => {
+        router.push('/auth/signin')
+      }, 2000)
+    }
+  }, [status, router]);
+  if(status === Status.LOADING){
+    return <BloodLoader />
+  }
+
+  
 
   return (
     <>
+      {showSuccessPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+            <div className="text-green-500 text-4xl mb-4">✓</div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Registration Successful!</h3>
+            <p className="text-gray-600">Redirecting to sign in...</p>
+          </div>
+        </div>
+      )}
       <div className="flex min-h-screen flex-col bg-white">
         <div className="flex flex-1 flex-col items-center justify-center px-6 py-12 lg:px-8">
           <div className="w-full max-w-sm space-y-8 p-6 rounded-xl shadow-lg border border-gray-200">

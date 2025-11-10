@@ -2,7 +2,8 @@ import { Status } from "@/lib/types/type"
 
 export interface IUserData{
   phoneNumber:string,
-  password:string
+  password:string,
+  userName?:string
 }
 
 

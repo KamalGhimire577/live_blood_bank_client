@@ -1,16 +1,20 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { ISignInData } from "./signin.type";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
-import store from "@/lib/store/store";
 import { loginUser } from "@/lib/store/auth/authSlice";
+import { Status } from "@/lib/types/type";
+import BloodLoader from "./../../Components/BloodLoader";
 
 export default function SignIn() {
 
   const dispatch = useAppDispatch()
-  const {user} =useAppSelector((store=>store.auth))
+  const router = useRouter()
+  const {user, status} = useAppSelector((store=>store.auth))
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false)
   console.log(user,"data user ma xa !!")
   const [formData, setFormData] = useState<ISignInData>({
     phoneNumber: "",
@@ -26,13 +30,35 @@ export default function SignIn() {
     
   const handleLogin = (e: React.FormEvent) => {
       e.preventDefault();
-      //console.log("Login data:", formData);
-      // TODO: Add API call here (phoneNumber OR email allowed)
       dispatch (loginUser(formData))
-
     };
 
+    useEffect(() => {
+      console.log('Status:', status, 'User:', user)
+      if (status === Status.SUCCESS) {
+        setShowSuccessPopup(true)
+        setTimeout(() => {
+          router.push('/home')
+        }, 2000)
+      }
+    }, [status, user, router]);
+
+    if(status === Status.LOADING){
+      return <BloodLoader />
+    }
+
   return (
+    <>
+      {showSuccessPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+            <div className="text-green-500 text-4xl mb-4">✓</div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Login Successful!</h3>
+            <p className="text-gray-600">Welcome {user.userName}!</p>
+            <p className="text-gray-500 text-sm mt-2">Redirecting to home...</p>
+          </div>
+        </div>
+      )}
     <div className="flex min-h-screen flex-col bg-white">
       <div className="flex flex-1 flex-col items-center justify-center px-6 py-12 lg:px-8">
         <div className="w-full max-w-sm space-y-8 p-6 rounded-xl shadow-lg border border-gray-200">
@@ -129,5 +155,6 @@ export default function SignIn() {
         </div>
       </div>
     </div>
+    </>
   );
 }
