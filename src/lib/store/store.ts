@@ -3,11 +3,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authSlice from "./auth/authSlice";
 import donorAuthSlice from "./donor/donorSlice"
-
+import bloodrequestReducer from "./bloodrequest/bloodrequestSlice";
 const store = configureStore({
   reducer: {
     auth: authSlice,
-    donorauth :donorAuthSlice
+    donorauth: donorAuthSlice,
+    bloodrequest: bloodrequestReducer,
   },
 });
 
