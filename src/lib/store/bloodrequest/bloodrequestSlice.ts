@@ -41,7 +41,7 @@ export function addBloodRequest(data:IBloodRequestData){
   return async function addBloodRequestThunk(dispatch:AppDispatch){
     try{
       const response = await API.post("bloodrequest/add",data)
-      if(response.status===201){
+      if(response.status===200){
         dispatch(setStatus(Status.SUCCESS))
       }else{
         dispatch(setStatus(Status.ERROR))
