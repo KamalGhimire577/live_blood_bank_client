@@ -9,10 +9,10 @@ export default function DonorCard() {
         {/* Header Image */}
         <div className="relative w-full h-48 bg-linear-to-r from-red-500 to-blue-500 rounded-t-2xl flex items-center justify-center">
           <Image
-            src="/donor.jpg"
+            src="/donor.jpeg"
             alt="Donor Image"
-            width={120}
-            height={120}
+            width={100}
+            height={100}
             className="rounded-full border-4 border-white shadow-md object-cover"
           />
         </div>

@@ -2,7 +2,7 @@
 
 export default function Page() {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-rose-100 via-red-100 to-red-200 px-4">
+    <div className="flex items-center justify-center min-h-screen bg-linear-to-br from-rose-100 via-red-100 to-red-200 px-4">
       <div className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 md:p-10">
         {/* Glowing accents */}
         <div className="absolute -top-10 -right-10 w-40 h-40 bg-red-400 rounded-full blur-2xl opacity-30" />
@@ -56,7 +56,7 @@ export default function Page() {
           {/* Submit */}
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-red-600 to-rose-500 text-white font-semibold py-2.5 rounded-lg shadow-md 
+            className="w-full bg-linear-to-r from-red-600 to-rose-500 text-white font-semibold py-2.5 rounded-lg shadow-md 
             hover:from-rose-500 hover:to-red-600 transition-all duration-300"
           >
             Login

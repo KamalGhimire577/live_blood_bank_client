@@ -18,12 +18,18 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
+    // ✅ Set user
     setUser(state, action: PayloadAction<IUserData>) {
       state.user = action.payload;
+      localStorage.setItem("user", JSON.stringify(action.payload)); // keep synced
     },
+
+    // ✅ Set status
     setStatus(state, action: PayloadAction<Status>) {
       state.status = action.payload;
     },
+
+    // ✅ Set token + persist/remove in localStorage
     setToken(state, action: PayloadAction<string | null>) {
       state.token = action.payload;
       if (action.payload) {
@@ -32,18 +38,20 @@ const authSlice = createSlice({
         localStorage.removeItem("token");
       }
     },
+
+    // ✅ Logout clears all
     logout(state) {
-      state.user = { phoneNumber: "", password: "", userName: "" };
+      state.user = { phoneNumber: "", password:"", userName: "" };
       state.token = null;
       state.status = Status.IDLE;
       localStorage.removeItem("token");
+      localStorage.removeItem("user");
     },
   },
 });
 
 export const { setUser, setStatus, setToken, logout } = authSlice.actions;
 export default authSlice.reducer;
-
 // ✅ Registration Thunk
 export function registerUser(data: IRegisterData) {
   return async function registerUserThunk(dispatch: AppDispatch) {
@@ -63,26 +71,28 @@ export function registerUser(data: IRegisterData) {
   };
 }
 
-// ✅ Login Thunk (Fixed typing)
+// ✅ Login Thunk
 export function loginUser(data: IUserData) {
   return async function loginUserThunk(dispatch: AppDispatch) {
+
     try {
       dispatch(setStatus(Status.LOADING));
 
-      // 👇 Define expected response structure
+      // Expected backend response
       interface LoginResponse {
         token: string;
         userName: string;
         phoneNumber: string;
-        password:"";
+        password?: string;
       }
 
-      const response = await API.post<LoginResponse>("auth/signin", data);
-
+      const response = await API.post<any>("auth/signin", data);
+      console.log({ response });
       if (response.status === 200 && response.data) {
-        const { token, ...userData } = response.data;
+        const { token, ...userData } = response.data.data;
 
-        dispatch(setUser(userData));
+        // ✅ Store both in Redux & localStorage
+        dispatch(setUser({ ...userData, password: userData.password || "" }));
         dispatch(setToken(token));
         dispatch(setStatus(Status.SUCCESS));
       } else {
@@ -94,3 +104,12 @@ export function loginUser(data: IUserData) {
     }
   };
 }
+export const initializeAuth = (dispatch: AppDispatch) => {
+  if (typeof window === "undefined") return; // ✅ avoid SSR crash
+
+  const token = localStorage.getItem("token");
+  const user = localStorage.getItem("user");
+
+  if (token) dispatch(setToken(token));
+  if (user) dispatch(setUser(JSON.parse(user)));
+};

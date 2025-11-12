@@ -2,8 +2,10 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useAppSelector } from "@/lib/store/hooks";
 
 export default function Navbar() {
+  const { user, token } = useAppSelector((state) => state.auth);
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -14,7 +16,7 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleSearch = (e:any) => {
+  const handleSearch = (e: any) => {
     e.preventDefault();
     if (!search.trim()) return;
     alert(`Searching for "${search}"...`);
@@ -24,21 +26,31 @@ export default function Navbar() {
   return (
     <header
       className={`sticky top-0 z-50 border-b border-slate-200 bg-white/80 backdrop-blur-md transition-all duration-300 ease-in-out ${
-        scrolled ? "py-3" : "py-2" // Reduced height (was py-5/py-3)
+        scrolled ? "py-3" : "py-2"
       }`}
     >
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 lg:px-10 gap-4">
-        {/* Logo */}
-        <div className="flex items-center">
+        {/* Logo + Greeting */}
+        <div className="flex items-center gap-3">
           <Link href="/">
             <Image
               src="/logo.png"
               alt="Logo"
-              width={60} // reduced size
+              width={60}
               height={45}
               className="object-contain bg-transparent"
             />
           </Link>
+
+          {/* 👋 Greeting */}
+          <p className="text-sm md:text-base font-medium text-slate-700">
+            Hi,&nbsp;
+            <span className="font-semibold text-white-500">
+              {user?.userName && user.userName.trim() !== ""
+                ? user.userName
+                : "Guest"}
+            </span>
+          </p>
         </div>
 
         {/* Center Search Bar */}
@@ -85,7 +97,7 @@ export default function Navbar() {
                   item === "Home"
                     ? "/"
                     : item === "Live Donors"
-                    ? "/blog"
+                    ? "/livedonor"
                     : item === "About Us"
                     ? "/about"
                     : "/contact"
@@ -100,18 +112,31 @@ export default function Navbar() {
 
         {/* Desktop Actions */}
         <div className="hidden md:flex items-center gap-3">
-          <Link
-            href="/auth/signin"
-            className="text-sm font-medium text-slate-700 hover:text-red-500"
-          >
-            Sign In
-          </Link>
-          <Link
-            href="/auth/donorsignup"
-            className="rounded-md bg-linear-to-br from-red-400 to-red-500 px-3 py-1 text-sm font-medium text-white shadow-md transition-transform duration-200 ease-in-out hover:scale-[1.03]"
-          >
-            Become a Donor
-          </Link>
+          {!token && (
+            <>
+              <Link
+                href="/auth/signin"
+                className="text-sm font-medium text-slate-700 hover:text-red-500"
+              >
+                Sign In
+              </Link>
+              <Link
+                href="/auth/donorsignup"
+                className="rounded-md bg-linear-to-br from-red-400 to-red-500 px-3 py-1 text-sm font-medium text-white shadow-md transition-transform duration-200 ease-in-out hover:scale-[1.03]"
+              >
+                Become a Donor
+              </Link>
+            </>
+          )}
+
+          {token && (
+            <Link
+              href="/logout"
+              className="text-sm font-medium text-black-600 hover:underline ml-2"
+            >
+              Logout
+            </Link>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
@@ -207,24 +232,38 @@ export default function Navbar() {
             )}
 
             {/* Actions */}
-            <li>
-              <Link
-                href="/auth/signin"
-                onClick={() => setMenuOpen(false)}
-                className="text-slate-700 hover:text-red-500"
-              >
-                Sign In
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/auth/donorsignup"
-                onClick={() => setMenuOpen(false)}
-                className="rounded-md bg-linear-to-br from-red-400 to-red-500 px-4 py-1.5 text-sm font-medium text-white shadow-md"
-              >
-                Become a Donor
-              </Link>
-            </li>
+            {!token ? (
+              <>
+                <li>
+                  <Link
+                    href="/auth/signin"
+                    onClick={() => setMenuOpen(false)}
+                    className="text-slate-700 hover:text-red-500"
+                  >
+                    Sign In
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/auth/donorsignup"
+                    onClick={() => setMenuOpen(false)}
+                    className="rounded-md bg-linear-to-br from-red-400 to-red-500 px-4 py-1.5 text-sm font-medium text-white shadow-md"
+                  >
+                    Become a Donor
+                  </Link>
+                </li>
+              </>
+            ) : (
+              <li>
+                <Link
+                  href="/logout"
+                  onClick={() => setMenuOpen(false)}
+                  className="text-red-600 font-medium hover:underline shadow-md"
+                >
+                  Logout
+                </Link>
+              </li>
+            )}
           </ul>
         </div>
       )}

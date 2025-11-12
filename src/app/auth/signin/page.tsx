@@ -18,6 +18,7 @@ export default function SignIn() {
   const [showSuccessPopup, setShowSuccessPopup] = useState(false)
   
   const [formData, setFormData] = useState<ISignInData>({
+    userName: "",
     phoneNumber: "",
     password: "",
   });
