@@ -4,6 +4,7 @@ import { Status } from "@/lib/types/type";
 import API from "@/lib/http/api";
 import { AppDispatch } from "../store";
 
+
 const initialState: IInitialState = {
   user: {
     id:"",
@@ -16,6 +17,18 @@ const initialState: IInitialState = {
   token: null,
   status: Status.IDLE,
 };
+interface LoginResponse {
+  message: string;
+  data: {
+    id: string;
+    email: string;
+    phoneNumber: string;
+    userName: string;
+    password: "";
+    token: string;
+    role:string
+  };
+}
 
 const authSlice = createSlice({
   name: "auth",
@@ -74,48 +87,50 @@ export function registerUser(data: IRegisterData) {
   };
 }
 
-// ✅ Login Thunk
+// ✅ User Login Thunk
 export function loginUser(data: ILoginData) {
   return async function loginUserThunk(dispatch: AppDispatch) {
-
     try {
       dispatch(setStatus(Status.LOADING));
-
-      // Expected backend response
-      // Expected backend response
-interface LoginResponse {
-  message: string;
-  data: {
-    id: string;
-    email: string;
-    phoneNumber: string;
-    userName: string;
-    password: "";
-    token: string;
-    role:string
-  }
-}
-
-const response = await API.post<LoginResponse>("auth/signin", data);
-console.log({ response });
-if (response.status === 200 && response.data) {
-  const { token, ...userData } = response.data.data;
-
-  // ✅ Store both in Redux & localStorage
-  dispatch(setUser({ ...userData, }));
-  dispatch(setToken(token));
-  dispatch(setStatus(Status.SUCCESS));
-}
-
-  else {
+      const response = await API.post<LoginResponse>("auth/signin", data);
+      
+      if (response.status === 200 && response.data) {
+        const { token, ...userData } = response.data.data;
+        dispatch(setUser({ ...userData }));
+        dispatch(setToken(token));
+        dispatch(setStatus(Status.SUCCESS));
+      } else {
         dispatch(setStatus(Status.ERROR));
       }
     } catch (error) {
-      console.error("Login error:", error);
+      console.error("User login error:", error);
       dispatch(setStatus(Status.ERROR));
     }
   };
 }
+
+// ✅ Admin Login Thunk
+export function loginAdmin(data: ILoginData) {
+  return async function loginAdminThunk(dispatch: AppDispatch) {
+    try {
+      dispatch(setStatus(Status.LOADING));
+      const response = await API.post<LoginResponse>("auth/admin/signin", data);
+      
+      if (response.status === 200 && response.data) {
+        const { token, ...userData } = response.data.data;
+        dispatch(setUser({ ...userData }));
+        dispatch(setToken(token));
+        dispatch(setStatus(Status.SUCCESS));
+      } else {
+        dispatch(setStatus(Status.ERROR));
+      }
+    } catch (error) {
+      console.error("Admin login error:", error);
+      dispatch(setStatus(Status.ERROR));
+    }
+  };
+}
+
 export const initializeAuth = (dispatch: AppDispatch) => {
   if (typeof window === "undefined") return; // ✅ avoid SSR crash
 
