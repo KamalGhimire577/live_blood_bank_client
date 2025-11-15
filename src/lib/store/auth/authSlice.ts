@@ -1,14 +1,17 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IInitialState, IRegisterData, IUserData } from "./authSlice.types";
+import { IInitialState, ILoginData, IRegisterData, IUserData } from "./authSlice.types";
 import { Status } from "@/lib/types/type";
 import API from "@/lib/http/api";
 import { AppDispatch } from "../store";
 
 const initialState: IInitialState = {
   user: {
+    id:"",
+    email: "",
     phoneNumber: "",
     password: "",
     userName: "",
+    role: "",
   },
   token: null,
   status: Status.IDLE,
@@ -41,7 +44,7 @@ const authSlice = createSlice({
 
     // ✅ Logout clears all
     logout(state) {
-      state.user = { phoneNumber: "", password:"", userName: "" };
+      state.user = { id:"", phoneNumber: "", password:"", userName: ""  ,email:"",role:""};
       state.token = null;
       state.status = Status.IDLE;
       localStorage.removeItem("token");
@@ -72,30 +75,39 @@ export function registerUser(data: IRegisterData) {
 }
 
 // ✅ Login Thunk
-export function loginUser(data: IUserData) {
+export function loginUser(data: ILoginData) {
   return async function loginUserThunk(dispatch: AppDispatch) {
 
     try {
       dispatch(setStatus(Status.LOADING));
 
       // Expected backend response
-      interface LoginResponse {
-        token: string;
-        userName: string;
-        phoneNumber: string;
-        password?: string;
-      }
+      // Expected backend response
+interface LoginResponse {
+  message: string;
+  data: {
+    id: string;
+    email: string;
+    phoneNumber: string;
+    userName: string;
+    password: "";
+    token: string;
+    role:string
+  }
+}
 
-      const response = await API.post<any>("auth/signin", data);
-      console.log({ response });
-      if (response.status === 200 && response.data) {
-        const { token, ...userData } = response.data.data;
+const response = await API.post<LoginResponse>("auth/signin", data);
+console.log({ response });
+if (response.status === 200 && response.data) {
+  const { token, ...userData } = response.data.data;
 
-        // ✅ Store both in Redux & localStorage
-        dispatch(setUser({ ...userData, password: userData.password || "" }));
-        dispatch(setToken(token));
-        dispatch(setStatus(Status.SUCCESS));
-      } else {
+  // ✅ Store both in Redux & localStorage
+  dispatch(setUser({ ...userData, }));
+  dispatch(setToken(token));
+  dispatch(setStatus(Status.SUCCESS));
+}
+
+  else {
         dispatch(setStatus(Status.ERROR));
       }
     } catch (error) {

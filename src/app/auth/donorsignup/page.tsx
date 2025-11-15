@@ -1,121 +1,301 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect, ChangeEvent, FormEvent } from "react";
+import { provinces, districts, localLevels, Province, District, LocalLevel } from "@/data/nepalLocations";
+
+interface FormDataType {
+  fullName: string;
+  email: string;
+  phone: string;
+  province: string;
+  district: string;
+  city: string;
+  bloodgroup: string;
+  dob: string;
+  lastDonation: string;
+  confirmEligibility: boolean;
+}
+
+interface ErrorType {
+  fullName?: string;
+  email?: string;
+  phone?: string;
+  province?: string;
+  district?: string;
+  city?: string;
+  bloodgroup?: string;
+  dob?: string;
+  lastDonation?: string;
+  confirmEligibility?: string;
+}
 
 export default function DonorForm() {
-  const [formData, setFormData] = useState({
-    user_id: "",
-    address: "",
+  const [filteredDistricts, setFilteredDistricts] = useState<District[]>([]);
+  const [filteredCities, setFilteredCities] = useState<LocalLevel[]>([]);
+
+
+  const [errors, setErrors] = useState<ErrorType>({});
+  const [ageError, setAgeError] = useState<string>("");
+  const [donationDateError, setDonationDateError] = useState<string>("");
+
+  // Calculate date limits
+  const today = new Date().toISOString().split('T')[0];
+  const minAge = new Date();
+  minAge.setFullYear(minAge.getFullYear() - 60);
+  const maxAge = new Date();
+  maxAge.setFullYear(maxAge.getFullYear() - 18);
+  const minDob = minAge.toISOString().split('T')[0];
+  const maxDob = maxAge.toISOString().split('T')[0];
+
+  const [formData, setFormData] = useState<FormDataType>({
+    fullName: "",
+    email: "",
+    phone: "",
+    province: "",
+    district: "",
+    city: "",
     bloodgroup: "",
     dob: "",
-    last_donation_date: "",
-    next_eligible_date: "",
+    lastDonation: "",
     confirmEligibility: false,
   });
 
-  const [ageError, setAgeError] = useState("");
+  // Filter districts when province changes
+  useEffect(() => {
+    if (!formData.province) {
+      setFilteredDistricts([]);
+      setFormData(prev => ({ ...prev, district: "", city: "" }));
+      return;
+    }
+    
+    const filtered = districts.filter((d) => d.province_id === Number(formData.province));
+    setFilteredDistricts(filtered);
+    setFormData(prev => ({ ...prev, district: "", city: "" }));
+  }, [formData.province]);
 
-  const handleChange = (e:any) => {
-    const { name, value, type, checked } = e.target;
+  // Filter cities when district changes
+  useEffect(() => {
+    if (!formData.district) {
+      setFilteredCities([]);
+      setFormData(prev => ({ ...prev, city: "" }));
+      return;
+    }
+    
+    const filtered = localLevels.filter((c) => c.district_id === Number(formData.district));
+    setFilteredCities(filtered);
+    setFormData(prev => ({ ...prev, city: "" }));
+  }, [formData.district]);
+
+  // Handle input change
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value, type } = e.target;
+
     setFormData({
       ...formData,
-      [name]: type === "checkbox" ? checked : value,
+      [name]:
+        type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
     });
 
-    // Age validation on DOB
     if (name === "dob") {
-      const dobDate = new Date(value);
-      const today = new Date();
-      const age = today.getFullYear() - dobDate.getFullYear();
-      const monthDiff = today.getMonth() - dobDate.getMonth();
+      const dob = new Date(value);
+      const now = new Date();
+      const age = now.getFullYear() - dob.getFullYear();
 
-      if (age < 18 || (age === 18 && monthDiff < 0)) {
-        setAgeError("You must be at least 18 years old to donate blood.");
+      if (age < 18) {
+        setAgeError("Must be at least 18 years old.");
+      } else if (age > 60) {
+        setAgeError("Must be under 60 years old.");
       } else {
         setAgeError("");
       }
     }
+
+    if (name === "lastDonation") {
+      const donationDate = new Date(value);
+      const now = new Date();
+      
+      if (donationDate > now) {
+        setDonationDateError("Cannot select future date.");
+      } else {
+        setDonationDateError("");
+      }
+    }
   };
 
-  const handleSubmit = (e:any) => {
+
+
+  // Submit
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
-    if (ageError) {
-      alert("Please ensure donor is at least 18 years old.");
-      return;
-    }
+    let newErrors: ErrorType = {};
 
-    if (!formData.confirmEligibility) {
-      alert("Please confirm that you meet the age requirement.");
-      return;
-    }
+    if (!formData.fullName) newErrors.fullName = "Full name is required";
+    if (!formData.email) newErrors.email = "Email is required";
+    if (!formData.phone) newErrors.phone = "Phone is required";
+    if (!formData.province) newErrors.province = "Select a province";
+    if (!formData.district) newErrors.district = "Select a district";
+    if (!formData.city) newErrors.city = "Select a city";
+    if (!formData.bloodgroup) newErrors.bloodgroup = "Select blood group";
+    if (ageError) newErrors.dob = ageError;
+    if (donationDateError) newErrors.lastDonation = donationDateError;
+    if (!formData.confirmEligibility)
+      newErrors.confirmEligibility = "You must confirm eligibility";
 
-    console.log("Donor Form Submitted:", formData);
-    // TODO: Send form data to backend
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) return;
+
+    console.log("Submitting:", formData);
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-[#f9fcff] py-12">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-lg border border-red-100 p-8">
-        <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
-          🩸 Donor Registration
+    <div className="flex justify-center items-center min-h-screen bg-[#fef7f7] py-12">
+      <div className="max-w-lg w-full bg-white rounded-2xl shadow-lg border border-red-200 p-8">
+        <h2 className="text-2xl font-bold text-center mb-6 text-red-700">
+          🩸 Blood Donor Registration
         </h2>
 
-        <form className="space-y-5">
+       
+
+        <form className="space-y-5" onSubmit={handleSubmit}>
           {/* Full Name */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Full Name
-            </label>
+            <label className="text-sm font-medium">Full Name</label>
             <input
-              type="text"
-              className="w-full rounded-md border border-red-400 bg-white px-3 py-2 text-gray-900 focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
-              placeholder="Enter your full name"
+              name="fullName"
+              className="w-full border border-red-400 rounded p-2 text-red-400"
+              onChange={handleChange}
             />
+            {errors.fullName && (
+              <p className="text-red-500 text-sm">{errors.fullName}</p>
+            )}
           </div>
 
           {/* Email */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Email
-            </label>
+            <label className="text-sm font-medium">Email</label>
             <input
+              name="email"
               type="email"
-              className="w-full rounded-md border border-red-400 bg-white px-3 py-2 text-gray-900 focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
-              placeholder="Enter your email"
+              className="w-full border border-red-400 rounded p-2 text-red-400"
+              onChange={handleChange}
             />
+            {errors.email && (
+              <p className="text-red-500 text-sm">{errors.email}</p>
+            )}
           </div>
 
-          {/* Phone Number */}
+          {/* Phone */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Phone Number
-            </label>
+            <label className="text-sm font-medium">Phone</label>
             <input
-              type="text"
-              className="w-full rounded-md border border-red-400 bg-white px-3 py-2 text-gray-900 focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
-              placeholder="98XXXXXXXX"
+              name="phone"
+              className="w-full border border-red-400 rounded p-2 text-red-400"
+              onChange={handleChange}
             />
+            {errors.phone && (
+              <p className="text-red-500 text-sm">{errors.phone}</p>
+            )}
           </div>
 
-          {/* Address */}
+          {/* Address Section */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Address
-            </label>
+            <h3 className="font-semibold text-gray-700 mb-2">Address</h3>
+
+            {/* Province */}
+            <label className="text-sm font-medium">Province</label>
+            <select
+              name="province"
+              className="w-full border border-red-400 rounded p-2 mb-2 text-red-400"
+              value={formData.province}
+              onChange={handleChange}
+            >
+              <option value="">Select Province</option>
+              {provinces.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name}
+                </option>
+              ))}
+            </select>
+            {errors.province && (
+              <p className="text-red-500 text-sm">{errors.province}</p>
+            )}
+
+            {/* District */}
+            <label className="text-sm font-medium">District</label>
+            <select
+              name="district"
+              className="w-full border border-red-400 rounded p-2 mb-2 text-red-400"
+              value={formData.district}
+              onChange={handleChange}
+            >
+              <option value="">Select District</option>
+              {filteredDistricts.map((d) => (
+                <option key={d.id} value={d.id}>
+                  {d.name}
+                </option>
+              ))}
+            </select>
+            {errors.district && (
+              <p className="text-red-500 text-sm">{errors.district}</p>
+            )}
+
+            {/* City */}
+            <label className="text-sm font-medium">City / Local Level</label>
             <input
+              name="city"
               type="text"
-              className="w-full rounded-md border border-red-400 bg-white px-3 py-2 text-gray-900 focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
-              placeholder="Enter your address"
+              className="w-full border border-red-400 rounded p-2 mb-1 text-red-400"
+              placeholder="Search city..."
+              value={formData.city}
+              onChange={(e) => {
+                const value = e.target.value;
+                setFormData({ ...formData, city: value });
+
+                if (value && formData.district) {
+                  const list = localLevels.filter(
+                    (c) =>
+                      c.district_id === Number(formData.district) &&
+                      c.name.toLowerCase().includes(value.toLowerCase())
+                  );
+                  setFilteredCities(list);
+                } else {
+                  setFilteredCities([]);
+                }
+              }}
             />
+
+            {filteredCities.length > 0 && (
+              <ul className="border rounded bg-white shadow max-h-40 overflow-y-auto mb-2">
+                {filteredCities.map((c) => (
+                  <li
+                    key={c.id}
+                    className="px-3 py-2 hover:bg-gray-200 cursor-pointer"
+                    onClick={() => {
+                      setFormData({ ...formData, city: c.name });
+                      setFilteredCities([]);
+                    }}
+                  >
+                    {c.name}
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            {errors.city && <p className="text-red-500 text-sm">{errors.city}</p>}
           </div>
 
           {/* Blood Group */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Blood Group
-            </label>
-            <select className="w-full rounded-md border border-red-400 px-3 py-2 text-gray-900 focus:ring-2 focus:ring-blue-400 focus:border-blue-400">
-              <option>Select blood group</option>
+            <label className="text-sm font-medium">Blood Group</label>
+            <select
+              name="bloodgroup"
+              className="w-full border border-red-400 rounded p-2 text-red-400"
+              onChange={handleChange}
+            >
+              <option value="">Select Blood Group</option>
               <option>A+</option>
               <option>A-</option>
               <option>B+</option>
@@ -125,50 +305,53 @@ export default function DonorForm() {
               <option>O+</option>
               <option>O-</option>
             </select>
+            {errors.bloodgroup && (
+              <p className="text-red-500 text-sm">{errors.bloodgroup}</p>
+            )}
           </div>
 
-          {/* Date of Birth */}
+          {/* DOB */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Date of Birth
-            </label>
+            <label className="text-sm font-medium">Date of Birth (18-60 years)</label>
             <input
+              name="dob"
               type="date"
-              className="w-full rounded-md border border-red-400 bg-white px-3 py-2 text-gray-900 focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
+              min={minDob}
+              max={maxDob}
+              className="w-full border border-red-400 rounded p-2 text-red-400"
+              onChange={handleChange}
             />
-            <p className="text-sm text-gray-500 mt-1">
-              Donor must be at least 18 years old.
-            </p>
+            {ageError && <p className="text-red-500 text-sm">{ageError}</p>}
           </div>
 
-          {/* Last Donation Date */}
+          {/* Last Donation */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Last Donation Date (optional)
-            </label>
+            <label className="text-sm font-medium">Last Donation Date (Optional)</label>
             <input
+              name="lastDonation"
               type="date"
-              className="w-full rounded-md border border-red-400 bg-white px-3 py-2 text-gray-900 focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
+              max={today}
+              className="w-full border border-red-400 rounded p-2 text-red-400"
+              onChange={handleChange}
             />
+            {donationDateError && <p className="text-red-500 text-sm">{donationDateError}</p>}
           </div>
 
-          {/* 18+ Confirmation */}
-          <div className="flex items-start gap-2 mt-3">
+          {/* Checkbox */}
+          <div className="flex items-center gap-2">
             <input
               type="checkbox"
-              className="mt-1 h-4 w-4 text-red-500 border-gray-300 rounded focus:ring-blue-400"
+              name="confirmEligibility"
+              onChange={handleChange}
             />
-            <label className="text-sm text-gray-700 leading-tight">
-              I confirm that I am at least 18 years old and eligible to
-              donate blood.
-            </label>
+            <label className="text-sm">I confirm I am eligible.</label>
           </div>
+          {errors.confirmEligibility && (
+            <p className="text-red-500 text-sm">{errors.confirmEligibility}</p>
+          )}
 
-          {/* Submit Button */}
-          <button
-            type="button"
-            className="w-full rounded-md bg-linear-to-r from-red-500 to-blue-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-md hover:from-blue-600 hover:to-red-600 transition-all"
-          >
+          {/* Submit */}
+          <button className="w-full bg-red-600 text-white py-2 rounded-lg font-semibold">
             Register as Donor
           </button>
         </form>
