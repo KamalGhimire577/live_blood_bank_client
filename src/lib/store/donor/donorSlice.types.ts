@@ -6,7 +6,7 @@ export interface IDonorData {
   email: string,
   phoneNumber: string,
   bloodGroup: string,
-  provience: string,
+  province: string,
   district: string,
   city: string,
   dateofbirth: string |Date,

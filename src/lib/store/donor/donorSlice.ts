@@ -1,6 +1,8 @@
 import { Status } from "@/lib/types/type";
 import { IDonorData, IDonorInitialState } from "./donorSlice.types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { AppDispatch } from "../store";
+import API from "@/lib/http/api";
 
 
 
@@ -12,14 +14,14 @@ const initialState: IDonorInitialState = {
     email: "",
     phoneNumber: "",
     bloodGroup: "",
-    provience: "",
+    province: "",
     district: "",
     city: "",
     dateofbirth: "",
     last_donation_date: null, // optional field
     next_eligible_date: null,
   },
-  status: Status.LOADING,
+  status: Status.IDLE,
 };
 
 const donorSlice = createSlice({
@@ -34,6 +36,24 @@ const donorSlice = createSlice({
     },
   },
 });
-const{setDonor,setStatus} =donorSlice.actions
-export default donorSlice.reducer
+export const { setDonor, setStatus } = donorSlice.actions;
+export default donorSlice.reducer;
+
+export function registerDonor(data: IDonorData) {
+  return async function registerDonorThunk(dispatch: AppDispatch) {
+    try {
+      dispatch(setStatus(Status.LOADING));
+      const response = await API.post("auth/register/donor", data);
+
+      if (response.status === 201) {
+        dispatch(setStatus(Status.SUCCESS));
+      } else {
+        dispatch(setStatus(Status.ERROR));
+      }
+    } catch (error) {
+      console.error("Donor signup error:", error);
+      dispatch(setStatus(Status.ERROR));
+    }
+  };
+}
 

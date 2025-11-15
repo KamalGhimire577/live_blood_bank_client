@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -26,7 +26,7 @@ export default function SignUp() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSignup = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSignup = (e:FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     dispatch(registerUser(formData));
   };

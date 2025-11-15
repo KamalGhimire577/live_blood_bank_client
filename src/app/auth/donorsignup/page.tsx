@@ -1,11 +1,16 @@
 "use client";
 import { useState, useEffect, ChangeEvent, FormEvent } from "react";
+import { useRouter } from "next/navigation";
 import { provinces, districts, localLevels, Province, District, LocalLevel } from "@/data/nepalLocations";
-
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
+import { setStatus, registerDonor } from "@/lib/store/donor/donorSlice";
+import { Status } from "@/lib/types/type";
+import BloodLoader from "../../Components/BloodLoader";
 interface FormDataType {
   fullName: string;
   email: string;
   phone: string;
+  password: string;
   province: string;
   district: string;
   city: string;
@@ -18,6 +23,7 @@ interface FormDataType {
 interface ErrorType {
   fullName?: string;
   email?: string;
+  password?: string;
   phone?: string;
   province?: string;
   district?: string;
@@ -29,6 +35,11 @@ interface ErrorType {
 }
 
 export default function DonorForm() {
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+  const { status } = useAppSelector((state) => state.donorauth);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+
   const [filteredDistricts, setFilteredDistricts] = useState<District[]>([]);
   const [filteredCities, setFilteredCities] = useState<LocalLevel[]>([]);
 
@@ -50,6 +61,7 @@ export default function DonorForm() {
     fullName: "",
     email: "",
     phone: "",
+    password:"",
     province: "",
     district: "",
     city: "",
@@ -58,6 +70,7 @@ export default function DonorForm() {
     lastDonation: "",
     confirmEligibility: false,
   });
+  
 
   // Filter districts when province changes
   useEffect(() => {
@@ -126,7 +139,7 @@ export default function DonorForm() {
 
 
   // Submit
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>)=> {
     e.preventDefault();
 
     let newErrors: ErrorType = {};
@@ -134,6 +147,7 @@ export default function DonorForm() {
     if (!formData.fullName) newErrors.fullName = "Full name is required";
     if (!formData.email) newErrors.email = "Email is required";
     if (!formData.phone) newErrors.phone = "Phone is required";
+    if (!formData.password) newErrors.password = "Password is required";
     if (!formData.province) newErrors.province = "Select a province";
     if (!formData.district) newErrors.district = "Select a district";
     if (!formData.city) newErrors.city = "Select a city";
@@ -146,12 +160,67 @@ export default function DonorForm() {
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length > 0) return;
+    dispatch(
+      registerDonor({
+        username: formData.fullName,
+        email: formData.email,
+        phoneNumber: formData.phone,
+        password: formData.password,
+        bloodGroup: formData.bloodgroup,
+        province: formData.province,
+        district: formData.district,
+        city: formData.city,
+        dateofbirth: formData.dob,
+        last_donation_date: formData.lastDonation || null,
+      })
+    );
+  };
 
-    console.log("Submitting:", formData);
+  useEffect(() => {
+    if (status === Status.SUCCESS) {
+      setShowSuccessPopup(true);
+      setTimeout(() => {
+        setFormData({
+          fullName: "",
+          email: "",
+          password: "",
+          phone: "",
+          province: "",
+          district: "",
+          city: "",
+          bloodgroup: "",
+          dob: "",
+          lastDonation: "",
+          confirmEligibility: false,
+        });
+        dispatch(setStatus(Status.IDLE));
+        router.push("/auth/signin");
+      }, 2000);
+    }
+  }, [status, router, dispatch]);
+
+  if (status === Status.LOADING) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-white">
+        <BloodLoader />
+      </div>
+    );
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-[#fef7f7] py-12">
+    <>
+      {showSuccessPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+            <div className="text-green-500 text-4xl mb-4">✓</div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              Donor Registration Successful!
+            </h3>
+            <p className="text-gray-600">Redirecting to sign in...</p>
+          </div>
+        </div>
+      )}
+      <div className="flex justify-center items-center min-h-screen bg-[#fef7f7] py-12">
       <div className="max-w-lg w-full bg-white rounded-2xl shadow-lg border border-red-200 p-8">
         <h2 className="text-2xl font-bold text-center mb-6 text-red-700">
           🩸 Blood Donor Registration
@@ -197,6 +266,20 @@ export default function DonorForm() {
             />
             {errors.phone && (
               <p className="text-red-500 text-sm">{errors.phone}</p>
+            )}
+          </div>
+
+          {/* Password */}
+          <div>
+            <label className="text-sm font-medium">Password</label>
+            <input
+              name="password"
+              type="password"
+              className="w-full border border-red-400 rounded p-2 text-red-400"
+              onChange={handleChange}
+            />
+            {errors.password && (
+              <p className="text-red-500 text-sm">{errors.password}</p>
             )}
           </div>
 
@@ -357,5 +440,6 @@ export default function DonorForm() {
         </form>
       </div>
     </div>
+    </>
   );
 }
