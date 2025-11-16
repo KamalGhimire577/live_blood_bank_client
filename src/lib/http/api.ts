@@ -5,9 +5,23 @@ import axios from "axios";
 const API = axios.create({
   baseURL: "http://localhost:4000/api/",
   headers: {
-    "Content-Type": "application/json", // send vayirako data ko format
-    Accept: "application/json", // receive huda kasto type ko format ko receive garne
+    "Content-Type": "application/json",
+    Accept: "application/json",
   },
 });
+
+// Add token to requests automatically
+API.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 export default API;

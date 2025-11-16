@@ -13,8 +13,11 @@ export default function BloodRequestForm() {
   const params = useParams();
   const donorId = params.donorId as string;
   const { status } = useAppSelector((state) => state.bloodrequest);
-  const { user } = useAppSelector((state) => state.auth); // Get user data
+  const { user, token } = useAppSelector((state) => state.auth);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [showErrorPopup, setShowErrorPopup] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   const [formData, setFormData] = useState<IBloodRequestData>({
     donor_id: "",
@@ -27,21 +30,56 @@ export default function BloodRequestForm() {
     status: "",
   });
 
-  // Set donor_id from URL params and auto-fill user data
+  // Check authentication and auto-fill user data
   useEffect(() => {
-    if (donorId) {
-      setFormData(prev => ({
-        ...prev,
-        donor_id: donorId,
-        requestor_id: user.id || "",
-        requester_name: user.userName || "",
-        requester_phone: user.phoneNumber || "",
-      }));
-    }
-  }, [donorId, user]);
+    // Wait a moment for auth state to initialize from localStorage
+    const timer = setTimeout(() => {
+      if (!token) {
+        router.push("/auth/signin");
+        return;
+      }
+      
+      if (donorId) {
+        setFormData(prev => ({
+          ...prev,
+          donor_id: donorId,
+          requester_name: user.userName || "",
+          requester_phone: user.phoneNumber || "",
+          requestor_id: user.id || "",
+        }));
+      } else {
+        console.error("No donorId found in URL params");
+      }
+      setIsLoading(false);
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [donorId, user, token, router]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!token) {
+      router.push("/auth/signin");
+      return;
+    }
+    
+    if (!formData.donor_id) {
+      setErrorMessage("Donor ID is missing. Please try again.");
+      setShowErrorPopup(true);
+      setTimeout(() => setShowErrorPopup(false), 3000);
+      return;
+    }
+    
+    if (!user.userName || !user.phoneNumber || !user.id) {
+      setErrorMessage("User information is incomplete. Please login again.");
+      setShowErrorPopup(true);
+      setTimeout(() => setShowErrorPopup(false), 3000);
+      return;
+    }
+    
+    console.log("Submitting with token:", token ? "Present" : "Missing");
+    console.log("User data:", { id: user.id, userName: user.userName, phoneNumber: user.phoneNumber });
+    
     dispatch(addBloodRequest(formData));
   };
 
@@ -62,8 +100,23 @@ export default function BloodRequestForm() {
         dispatch(setStatus(Status.IDLE));
         router.push("/");
       }, 2000);
+    } else if (status === Status.ERROR) {
+      setErrorMessage("Failed to submit blood request. Please try again.");
+      setShowErrorPopup(true);
+      setTimeout(() => {
+        setShowErrorPopup(false);
+        dispatch(setStatus(Status.IDLE));
+      }, 3000);
     }
   }, [status, router, dispatch, donorId]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-lg">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -72,9 +125,21 @@ export default function BloodRequestForm() {
           <div className="bg-white p-6 rounded-lg shadow-lg text-center">
             <div className="text-green-500 text-4xl mb-4">✓</div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              Blood Request Submitted!
+              Request Submitted!
             </h3>
-            <p className="text-gray-600">Redirecting to home...</p>
+            <p className="text-gray-600">Check response on your dashboard from donor</p>
+          </div>
+        </div>
+      )}
+      
+      {showErrorPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+            <div className="text-red-500 text-4xl mb-4">✗</div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              Request Failed!
+            </h3>
+            <p className="text-gray-600">{errorMessage}</p>
           </div>
         </div>
       )}
@@ -120,6 +185,12 @@ export default function BloodRequestForm() {
             required
           />
         </div>
+        
+        {status === Status.ERROR && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
+            <p className="text-sm text-red-600">Failed to submit request. Please check your connection and try again.</p>
+          </div>
+        )}
 
         {/* Address */}
         <div>

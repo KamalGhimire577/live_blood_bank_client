@@ -1,5 +1,5 @@
 import { Status } from "@/lib/types/type";
-import { IDonorData, IDonorInitialState } from "./donorSlice.types";
+import { IDonorData, IDonorInitialState, IEligibleDonorData } from "./donorSlice.types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppDispatch } from "../store";
 import API from "@/lib/http/api";
@@ -32,7 +32,7 @@ const donorSlice = createSlice({
     setDonor(state: IDonorInitialState, action: PayloadAction<IDonorData>) {
       state.donor = action.payload;
     },
-    setDonors(state: IDonorInitialState, action: PayloadAction<IDonorData[]>) {
+    setDonors(state: IDonorInitialState, action: PayloadAction<IEligibleDonorData[]>) {
       state.donors = action.payload;
     },
     setStatus(state: IDonorInitialState, action: PayloadAction<Status>) {
@@ -61,20 +61,20 @@ export function registerDonor(data: IDonorData) {
   };
 }
 
-export function fetchAllDonors() {
-  return async function fetchAllDonorsThunk(dispatch: AppDispatch) {
+export function fetchAllEligibleDonors() {
+  return async function fetchAllEligibleDonorsThunk(dispatch: AppDispatch) {
     try {
       dispatch(setStatus(Status.LOADING));
-      const response = await API.get("donors");
+      const response = await API.get<{message: string, data: IEligibleDonorData[]}>("donor/eligible");
 
       if (response.status === 200) {
-        dispatch(setDonors(response.data));
+        dispatch(setDonors(response.data.data));
         dispatch(setStatus(Status.SUCCESS));
       } else {
         dispatch(setStatus(Status.ERROR));
       }
     } catch (error) {
-      console.error("Fetch donors error:", error);
+      console.error("Fetch eligible donors error:", error);
       dispatch(setStatus(Status.ERROR));
     }
   };

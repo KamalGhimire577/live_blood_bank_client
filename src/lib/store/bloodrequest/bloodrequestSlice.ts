@@ -48,21 +48,41 @@ const bloodrequestSlice = createSlice({
 export const { setBloodRequest, setStatus } = bloodrequestSlice.actions;
 export default bloodrequestSlice.reducer;
 
-export function addBloodRequest(data:IBloodRequestData){
-  return async function addBloodRequestThunk(dispatch:AppDispatch){
-    try{
+export function addBloodRequest(data: IBloodRequestData) {
+  return async function addBloodRequestThunk(dispatch: AppDispatch) {
+    try {
       dispatch(setStatus(Status.LOADING));
-      const response = await API.post("bloodrequest/add", data);
-      if(response.status === 201){
-        dispatch(setStatus(Status.SUCCESS))
-      }else{
-        dispatch(setStatus(Status.ERROR))
+      
+      // Backend expects: donorId, requesterAddress, urgent, bloodGroup
+      // Backend gets requesterName, requesterPhone, requesterId from req.user
+      const requestData = {
+        donorId: data.donor_id,
+        requesterAddress: data.requester_address,
+        urgent: data.urgent,
+        bloodGroup: data.blood_group
+      };
+      
+      const response = await API.post("blood/request", requestData);
+      
+      if (response.status === 201) {
+        dispatch(setStatus(Status.SUCCESS));
+      } else {
+        dispatch(setStatus(Status.ERROR));
       }
-    }catch(error){
-      console.log(error)
-      dispatch(setStatus(Status.ERROR))
+    } catch (error: any) {
+      console.error("Blood request error:", error);
+      console.error("Error response:", error.response?.data);
+      console.error("Error status:", error.response?.status);
+      
+      if (error.response?.status === 401) {
+        console.error("Authentication failed - token invalid or expired");
+      } else if (error.response?.status === 400) {
+        console.error("Bad request - missing required fields:", error.response.data);
+      }
+      
+      dispatch(setStatus(Status.ERROR));
     }
-  }
+  };
 }
 
 
