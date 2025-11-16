@@ -26,3 +26,7 @@ export interface ILoginData {
   phoneNumber: string;
   password: string;
 }
+export interface IAdminLoginData {
+  email: string;
+  password: string;
+}

@@ -1,5 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IInitialState, ILoginData, IRegisterData, IUserData } from "./authSlice.types";
+import {
+  IInitialState,
+  ILoginData,
+  IRegisterData,
+  IUserData,
+  IAdminLoginData,
+} from "./authSlice.types";
 import { Status } from "@/lib/types/type";
 import API from "@/lib/http/api";
 import { AppDispatch } from "../store";
@@ -34,18 +40,18 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    // ✅ Set user
+    //  Set user
     setUser(state, action: PayloadAction<IUserData>) {
       state.user = action.payload;
       localStorage.setItem("user", JSON.stringify(action.payload)); // keep synced
     },
 
-    // ✅ Set status
+    // Set status
     setStatus(state, action: PayloadAction<Status>) {
       state.status = action.payload;
     },
 
-    // ✅ Set token + persist/remove in localStorage
+    //  Set token + persist/remove in localStorage
     setToken(state, action: PayloadAction<string | null>) {
       state.token = action.payload;
       if (action.payload) {
@@ -55,7 +61,7 @@ const authSlice = createSlice({
       }
     },
 
-    // ✅ Logout clears all
+    //  Logout clears all
     logout(state) {
       state.user = { id:"", phoneNumber: "", password:"", userName: ""  ,email:"",role:""};
       state.token = null;
@@ -68,7 +74,7 @@ const authSlice = createSlice({
 
 export const { setUser, setStatus, setToken, logout } = authSlice.actions;
 export default authSlice.reducer;
-// ✅ Registration Thunk
+// Registration Thunk
 export function registerUser(data: IRegisterData) {
   return async function registerUserThunk(dispatch: AppDispatch) {
     try {
@@ -110,7 +116,7 @@ export function loginUser(data: ILoginData) {
 }
 
 // ✅ Admin Login Thunk
-export function loginAdmin(data: ILoginData) {
+export function loginAdmin(data: IAdminLoginData) {
   return async function loginAdminThunk(dispatch: AppDispatch) {
     try {
       dispatch(setStatus(Status.LOADING));
@@ -132,7 +138,7 @@ export function loginAdmin(data: ILoginData) {
 }
 
 export const initializeAuth = (dispatch: AppDispatch) => {
-  if (typeof window === "undefined") return; // ✅ avoid SSR crash
+  if (typeof window === "undefined") return; // avoid SSR crash
 
   const token = localStorage.getItem("token");
   const user = localStorage.getItem("user");

@@ -21,6 +21,7 @@ const initialState: IDonorInitialState = {
     last_donation_date: null, // optional field
     next_eligible_date: null,
   },
+  donors: [],
   status: Status.IDLE,
 };
 
@@ -29,14 +30,17 @@ const donorSlice = createSlice({
   initialState: initialState,
   reducers: {
     setDonor(state: IDonorInitialState, action: PayloadAction<IDonorData>) {
-      state.donor =action.payload
+      state.donor = action.payload;
+    },
+    setDonors(state: IDonorInitialState, action: PayloadAction<IDonorData[]>) {
+      state.donors = action.payload;
     },
     setStatus(state: IDonorInitialState, action: PayloadAction<Status>) {
-      state.status =action.payload
+      state.status = action.payload;
     },
   },
 });
-export const { setDonor, setStatus } = donorSlice.actions;
+export const { setDonor, setDonors, setStatus } = donorSlice.actions;
 export default donorSlice.reducer;
 
 export function registerDonor(data: IDonorData) {
@@ -52,6 +56,25 @@ export function registerDonor(data: IDonorData) {
       }
     } catch (error) {
       console.error("Donor signup error:", error);
+      dispatch(setStatus(Status.ERROR));
+    }
+  };
+}
+
+export function fetchAllDonors() {
+  return async function fetchAllDonorsThunk(dispatch: AppDispatch) {
+    try {
+      dispatch(setStatus(Status.LOADING));
+      const response = await API.get("donors");
+
+      if (response.status === 200) {
+        dispatch(setDonors(response.data));
+        dispatch(setStatus(Status.SUCCESS));
+      } else {
+        dispatch(setStatus(Status.ERROR));
+      }
+    } catch (error) {
+      console.error("Fetch donors error:", error);
       dispatch(setStatus(Status.ERROR));
     }
   };

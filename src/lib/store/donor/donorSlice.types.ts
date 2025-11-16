@@ -1,6 +1,7 @@
 import { Status } from "@/lib/types/type";
 
 export interface IDonorData {
+  id?: string,
   username: string,
   password: string,
   email: string,
@@ -16,4 +17,5 @@ export interface IDonorData {
 
 export interface IDonorInitialState{
   donor:IDonorData,
+  donors: IDonorData[], // Array of all donors
   status:Status}

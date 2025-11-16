@@ -30,7 +30,7 @@ const initialState:IInitialBloodData={
     blood_group: "",
     status: "",
   },
-  status:Status.LOADING
+  status:Status.IDLE
 }
 const bloodrequestSlice = createSlice({
   name: "bloodrequest",
@@ -45,14 +45,15 @@ const bloodrequestSlice = createSlice({
   },
 });
 
-const { setBloodRequest, setStatus } = bloodrequestSlice.actions;
-export default bloodrequestSlice.reducer
+export const { setBloodRequest, setStatus } = bloodrequestSlice.actions;
+export default bloodrequestSlice.reducer;
 
 export function addBloodRequest(data:IBloodRequestData){
   return async function addBloodRequestThunk(dispatch:AppDispatch){
     try{
-      const response = await API.post("bloodrequest/:id/add",data)
-      if(response.status===200){
+      dispatch(setStatus(Status.LOADING));
+      const response = await API.post("bloodrequest/add", data);
+      if(response.status === 201){
         dispatch(setStatus(Status.SUCCESS))
       }else{
         dispatch(setStatus(Status.ERROR))

@@ -1,14 +1,20 @@
 "use client";
 
-import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { addBloodRequest } from "@/lib/store/bloodrequest/bloodrequestSlice";
+import { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
+import { addBloodRequest, setStatus } from "@/lib/store/bloodrequest/bloodrequestSlice";
 import { IBloodRequestData } from "@/lib/store/bloodrequest/bloodrequestSlice.types";
-import { AppDispatch } from "@/lib/store/store";
-import { Status } from "@/lib/types/type"; // optional if you track loading states
+import { Status } from "@/lib/types/type";
 
 export default function BloodRequestForm() {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+  const params = useParams();
+  const donorId = params.donorId as string;
+  const { status } = useAppSelector((state) => state.bloodrequest);
+  const { user } = useAppSelector((state) => state.auth); // Get user data
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
   const [formData, setFormData] = useState<IBloodRequestData>({
     donor_id: "",
@@ -21,21 +27,58 @@ export default function BloodRequestForm() {
     status: "",
   });
 
-  const [status, setStatus] = useState(Status.IDLE);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setStatus(Status.LOADING);
-    try {
-      await dispatch(addBloodRequest(formData));
-      setStatus(Status.SUCCESS);
-    } catch {
-      setStatus(Status.ERROR);
+  // Set donor_id from URL params and auto-fill user data
+  useEffect(() => {
+    if (donorId) {
+      setFormData(prev => ({
+        ...prev,
+        donor_id: donorId,
+        requestor_id: user.id || "",
+        requester_name: user.userName || "",
+        requester_phone: user.phoneNumber || "",
+      }));
     }
+  }, [donorId, user]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    dispatch(addBloodRequest(formData));
   };
 
+  useEffect(() => {
+    if (status === Status.SUCCESS) {
+      setShowSuccessPopup(true);
+      setTimeout(() => {
+        setFormData({
+          donor_id: donorId,
+          requestor_id: "",
+          requester_name: "",
+          requester_phone: "",
+          requester_address: "",
+          urgent: false,
+          blood_group: "",
+          status: "",
+        });
+        dispatch(setStatus(Status.IDLE));
+        router.push("/");
+      }, 2000);
+    }
+  }, [status, router, dispatch, donorId]);
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-100 to-rose-200 px-4">
+    <>
+      {showSuccessPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+            <div className="text-green-500 text-4xl mb-4">✓</div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              Blood Request Submitted!
+            </h3>
+            <p className="text-gray-600">Redirecting to home...</p>
+          </div>
+        </div>
+      )}
+      <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-red-100 to-rose-200 px-4">
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-lg bg-white shadow-lg rounded-2xl p-8 space-y-6"
@@ -137,7 +180,7 @@ export default function BloodRequestForm() {
         <button
           type="submit"
           disabled={status === Status.LOADING}
-          className={`w-full rounded-md bg-gradient-to-r from-red-600 to-rose-500 px-4 py-2.5 text-white font-semibold transition-all duration-200 ${
+          className={`w-full rounded-md bg-linear-to-r from-red-600 to-rose-500 px-4 py-2.5 text-white font-semibold transition-all duration-200 ${
             status === Status.LOADING
               ? "opacity-60 cursor-not-allowed"
               : "hover:from-rose-500 hover:to-red-600"
@@ -147,5 +190,6 @@ export default function BloodRequestForm() {
         </button>
       </form>
     </div>
+    </>
   );
 }

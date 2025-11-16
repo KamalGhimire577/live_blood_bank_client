@@ -1,56 +1,86 @@
 "use client";
+import { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
+import { fetchAllDonors } from "@/lib/store/donor/donorSlice";
+import { Status } from "@/lib/types/type";
+import BloodLoader from "./BloodLoader";
+import { provinces, districts, localLevels } from "@/data/nepalLocations";
 
 export default function DonorCard() {
-  return (
-    <div className="flex justify-center items-center bg-[#f9fcff] py-12">
-      <div className="max-w-sm w-full bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-red-100">
-        {/* Header Image */}
-        <div className="relative w-full h-48 bg-linear-to-r from-red-500 to-blue-500 rounded-t-2xl flex items-center justify-center">
-          <Image
-            src="/donor.jpeg"
-            alt="Donor Image"
-            width={100}
-            height={100}
-            className="rounded-full border-4 border-white shadow-md object-cover"
-          />
-        </div>
+  const dispatch = useAppDispatch();
+  const { donors, status } = useAppSelector((state) => state.donorauth);
 
-        {/* Donor Info */}
-        <div className="p-6 text-center">
-          <h2 className="text-xl font-bold text-gray-900">Kedar Ghimire</h2>
-          <p className="text-sm text-gray-600">Kathmandu, Nepal</p>
+  // Function to get full address
+  const getFullAddress = (provinceId: string, districtId: string, cityName: string) => {
+    const province = provinces.find(p => p.id === Number(provinceId));
+    const district = districts.find(d => d.id === Number(districtId));
+    return `${cityName}, ${district?.name || districtId}, ${province?.name || provinceId}`;
+  };
 
-          {/* Blood Group */}
-          <div className="mt-4 flex justify-center">
-            <span className="text-lg font-semibold bg-linear-to-r from-red-500 to-blue-500 text-white px-4 py-1 rounded-full shadow-md">
-              Blood Group: <span className="font-bold ml-1">A+</span>
-            </span>
-          </div>
+  useEffect(() => {
+    dispatch(fetchAllDonors());
+  }, [dispatch]);
 
-          {/* Contact Info */}
-          <div className="mt-4 text-gray-700 space-y-1">
-            <p>
-              <span className="font-semibold">📞 Contact:</span> +977 9800000000
-            </p>
-            <p>
-              <span className="font-semibold">📍 Address:</span> Baneshwor, KTM
-            </p>
-          </div>
-
-          {/* Divider */}
-          <div className="my-5 border-t border-gray-200"></div>
-
-          {/* Make Request Button */}
-          <Link
-            href="/bloodrequest"
-            className="inline-block w-full rounded-lg bg-linear-to-r from-red-500 to-blue-500 text-white font-semibold py-2.5 hover:from-blue-600 hover:to-red-600 transition-all shadow-md"
-          >
-            Make Request
-          </Link>
-        </div>
+  if (status === Status.LOADING) {
+    return (
+      <div className="flex justify-center items-center py-12">
+        <BloodLoader />
       </div>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4">
+      {donors.map((donor, index) => (
+        <div key={index} className="w-full bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-red-100">
+          {/* Header Image */}
+          <div className="relative w-full h-32 bg-gradient-to-r from-red-500 to-blue-500 rounded-t-xl flex items-center justify-center">
+            <Image
+              src="/donor.jpeg"
+              alt="Donor Image"
+              width={60}
+              height={60}
+              className="rounded-full border-4 border-white shadow-md object-cover"
+            />
+          </div>
+
+          {/* Donor Info */}
+          <div className="p-4 text-center">
+            <h2 className="text-lg font-bold text-gray-900">{donor.username}</h2>
+            <p className="text-sm text-gray-600">{getFullAddress(donor.province, donor.district, donor.city)}</p>
+
+            {/* Blood Group */}
+            <div className="mt-4 flex justify-center">
+              <span className="text-sm font-semibold bg-gradient-to-r from-red-500 to-blue-500 text-white px-3 py-1 rounded-full shadow-md">
+                Blood Group: <span className="font-bold ml-1">{donor.bloodGroup}</span>
+              </span>
+            </div>
+
+            {/* Contact Info */}
+            <div className="mt-3 text-gray-700 space-y-1 text-sm">
+              <p>
+                <span className="font-semibold"> Contact:</span> {donor.phoneNumber}
+              </p>
+              <p>
+                <span className="font-semibold"> Address:</span> {getFullAddress(donor.province, donor.district, donor.city)}
+              </p>
+            </div>
+
+            {/* Divider */}
+            <div className="my-4 border-t border-gray-200"></div>
+
+            {/* Make Request Button */}
+            <Link
+              href={`/bloodrequest?donorId=${donor.id}`}
+              className="inline-block w-full rounded-lg bg-gradient-to-r from-red-500 to-blue-500 text-white font-semibold py-2 text-sm hover:from-blue-600 hover:to-red-600 transition-all shadow-md"
+            >
+              Make Request
+            </Link>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
