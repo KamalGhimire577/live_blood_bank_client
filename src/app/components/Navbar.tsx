@@ -23,7 +23,7 @@ const getMenuItems = (role: string) => {
       {
         title: "Donor Dashboard",
         icon: "M3 3h7v7H3V3zm11 0h7v7h-7V3zm-11 11h7v7H3v-7zm11 0h7v7h-7v-7z",
-        href: "/donor/dashboard/donorid"
+        href: "/donor/dashboard"
       },
       ...baseItems
     ];

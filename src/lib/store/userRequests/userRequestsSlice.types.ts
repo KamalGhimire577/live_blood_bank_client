@@ -1,3 +1,5 @@
+import { Status } from "@/lib/types/type";
+
 export interface IUserRequest {
   request_id: number;
   requester_name: string;
@@ -21,6 +23,6 @@ export interface IUserRequestsResponse {
 
 export interface IUserRequestsState {
   requests: IUserRequest[];
-  status: any;
+  status: Status;
   error: string | null;
 }
