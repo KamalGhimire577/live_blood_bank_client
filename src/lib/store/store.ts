@@ -6,6 +6,7 @@ import donorAuthSlice from "./donor/donorSlice"
 import bloodrequestReducer from "./bloodrequest/bloodrequestSlice";
 import userRequestsReducer from "./userRequests/userRequestsSlice";
 import donorRequestsReducer from "./donorRequests/donorRequestsSlice";
+import adminReducer from "./admin/adminSlice";
 const store = configureStore({
   reducer: {
     auth: authSlice,
@@ -13,7 +14,7 @@ const store = configureStore({
     bloodrequest: bloodrequestReducer,
     userRequests: userRequestsReducer,
     donorRequests: donorRequestsReducer,
-    
+    admin: adminReducer,
   },
 });
 
