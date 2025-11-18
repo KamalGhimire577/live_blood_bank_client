@@ -7,7 +7,7 @@ import "./globals.css";
 import Navbar from "./Components/Navbar";
 import Footer from "./Components/Footer";
 import { ReduxProvider } from "@/lib/store/provider";
-import AppInitializer from "../app/Components/AppInitializer"; // ✅ import this
+import AppInitializer from "./Components/AppInitializer";
 
 const poppins = Poppins({
   weight: "400",

@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
+import { Status } from '@/lib/types/type';
 import {
   fetchUsers,
   fetchDonors,
@@ -121,7 +122,7 @@ function DashboardSection() {
 
 function UsersSection() {
   const dispatch = useAppDispatch();
-  const { users, loading } = useAppSelector((state) => state.admin);
+  const { users, status } = useAppSelector((state) => state.admin);
 
   useEffect(() => {
     dispatch(fetchUsers());
@@ -133,7 +134,7 @@ function UsersSection() {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (status === Status.LOADING) return <div>Loading...</div>;
 
   return (
     <div>
@@ -173,7 +174,7 @@ function UsersSection() {
 
 function DonorsSection() {
   const dispatch = useAppDispatch();
-  const { donors, loading } = useAppSelector((state) => state.admin);
+  const { donors, status } = useAppSelector((state) => state.admin);
 
   useEffect(() => {
     dispatch(fetchDonors());
@@ -185,7 +186,7 @@ function DonorsSection() {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (status === Status.LOADING) return <div>Loading...</div>;
 
   return (
     <div>
@@ -227,17 +228,17 @@ function DonorsSection() {
 
 function RequestsSection() {
   const dispatch = useAppDispatch();
-  const { bloodRequests, loading } = useAppSelector((state) => state.admin);
+  const { bloodRequests, status } = useAppSelector((state) => state.admin);
 
   useEffect(() => {
     dispatch(fetchBloodRequests());
   }, [dispatch]);
 
-  const handleUpdateStatus = (id: string, status: string) => {
-    dispatch(updateBloodRequestStatus({ id, status }));
+  const handleUpdateStatus = (id: string, newStatus: string) => {
+    dispatch(updateBloodRequestStatus(id, newStatus));
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (status === Status.LOADING) return <div>Loading...</div>;
 
   return (
     <div>
@@ -303,13 +304,13 @@ function RequestsSection() {
 
 function DonationsSection() {
   const dispatch = useAppDispatch();
-  const { donations, loading } = useAppSelector((state) => state.admin);
+  const { donations, status } = useAppSelector((state) => state.admin);
 
   useEffect(() => {
     dispatch(fetchDonations());
   }, [dispatch]);
 
-  if (loading) return <div>Loading...</div>;
+  if (status === Status.LOADING) return <div>Loading...</div>;
 
   return (
     <div>
