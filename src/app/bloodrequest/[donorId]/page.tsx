@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { addBloodRequest, setStatus } from "@/lib/store/bloodrequest/bloodrequestSlice";
 import { IBloodRequestData } from "@/lib/store/bloodrequest/bloodrequestSlice.types";
@@ -11,7 +11,10 @@ export default function BloodRequestForm() {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const params = useParams();
+  const searchParams = useSearchParams();
   const donorId = params.donorId as string;
+  const donorName = searchParams.get('name');
+  const donorBloodGroup = searchParams.get('bloodGroup');
   const { status } = useAppSelector((state) => state.bloodrequest);
   const { user, token } = useAppSelector((state) => state.auth);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
@@ -46,6 +49,7 @@ export default function BloodRequestForm() {
           requester_name: user.userName || "",
           requester_phone: user.phoneNumber || "",
           requestor_id: user.id || "",
+          blood_group: donorBloodGroup || "",
         }));
       } else {
         console.error("No donorId found in URL params");
@@ -54,7 +58,7 @@ export default function BloodRequestForm() {
     }, 100);
 
     return () => clearTimeout(timer);
-  }, [donorId, user, token, router]);
+  }, [donorId, donorBloodGroup, user, token, router]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -70,7 +74,10 @@ export default function BloodRequestForm() {
       return;
     }
     
-    if (!user.userName || !user.phoneNumber || !user.id) {
+    const userId = user.id 
+    const userName = user.userName  
+    
+    if (!userId || !userName) {
       setErrorMessage("User information is incomplete. Please login again.");
       setShowErrorPopup(true);
       setTimeout(() => setShowErrorPopup(false), 3000);
@@ -78,7 +85,7 @@ export default function BloodRequestForm() {
     }
     
     console.log("Submitting with token:", token ? "Present" : "Missing");
-    console.log("User data:", { id: user.id, userName: user.userName, phoneNumber: user.phoneNumber });
+    console.log("User data:", { id: userId, userName: userName, role: user.role });
     
     dispatch(addBloodRequest(formData));
   };
@@ -151,6 +158,12 @@ export default function BloodRequestForm() {
         <h2 className="text-2xl font-semibold text-center text-rose-600 mb-6">
           🩸 Blood Request Form
         </h2>
+        {donorName && (
+          <div className="text-center mb-4">
+            <span className="text-sm text-gray-600">Requesting from: </span>
+            <span className="font-semibold text-gray-800">{donorName}</span>
+          </div>
+        )}
 
         {/* Requester Name */}
         <div>
@@ -180,7 +193,7 @@ export default function BloodRequestForm() {
             onChange={(e) =>
               setFormData({ ...formData, requester_phone: e.target.value })
             }
-            placeholder="98XXXXXXXX"
+            placeholder={user.phoneNumber ? user.phoneNumber : "98XXXXXXXX"}
             className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
             required
           />
@@ -209,29 +222,16 @@ export default function BloodRequestForm() {
           />
         </div>
 
-        {/* Blood Group */}
+        {/* Blood Group Display */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Blood Group
+            Requested Blood Group
           </label>
-          <select
-            value={formData.blood_group}
-            onChange={(e) =>
-              setFormData({ ...formData, blood_group: e.target.value })
-            }
-            className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
-            required
-          >
-            <option value="">Select Blood Group</option>
-            <option value="A+">A+</option>
-            <option value="A-">A-</option>
-            <option value="B+">B+</option>
-            <option value="B-">B-</option>
-            <option value="O+">O+</option>
-            <option value="O-">O-</option>
-            <option value="AB+">AB+</option>
-            <option value="AB-">AB-</option>
-          </select>
+          <div className="w-full border border-gray-300 rounded-md px-4 py-2 bg-gray-50">
+            <span className="text-lg font-semibold text-rose-600">
+              {formData.blood_group || "Loading..."}
+            </span>
+          </div>
         </div>
 
         {/* Urgent Checkbox */}

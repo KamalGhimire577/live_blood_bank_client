@@ -97,8 +97,8 @@ export default function Navbar() {
       }`}
     >
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 lg:px-10 gap-4">
-        {/* Logo + Greeting */}
-        <div className="flex items-center gap-3">
+        {/* Logo */}
+        <div className="flex items-center">
           <Link href="/">
             <Image
               src="/logo.png"
@@ -108,21 +108,19 @@ export default function Navbar() {
               className="object-contain bg-transparent"
             />
           </Link>
-
-          </div>
+        </div>
         
-
-        {/* Center Search Bar */}
+        {/* Center Search Bar - Desktop and Mobile */}
         <form
           onSubmit={handleSearch}
-          className="hidden md:flex flex-1 justify-center"
+          className="flex flex-1 justify-center max-w-xs mx-4"
         >
-          <div className="relative w-full max-w-xs">
+          <div className="relative w-full">
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search donors by address..."
+              placeholder="Search donors..."
               className="w-full rounded-full border border-slate-300 py-1 pl-4 pr-9 text-sm text-slate-700 placeholder-slate-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400"
             />
             <button
@@ -254,7 +252,7 @@ export default function Navbar() {
           id="menu-button"
           onClick={() => setMenuOpen(!menuOpen)}
           type="button"
-          className="md:hidden flex items-center justify-center"
+          className="md:hidden flex items-center justify-center p-2"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -264,43 +262,27 @@ export default function Navbar() {
             stroke="currentColor"
             className="h-6 w-6 text-slate-900"
           >
-            {menuOpen ? (
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            ) : (
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-              />
-            )}
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+            />
           </svg>
         </button>
       </nav>
 
-      {/* Mobile Right Sidebar */}
+      {/* Mobile Popup Menu */}
       {menuOpen && (
-        <>
-          {/* Overlay */}
-          <div 
-            className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
-            onClick={() => setMenuOpen(false)}
-          />
-          
-          {/* Sidebar */}
-          <div 
-            id="mobile-sidebar"
-            className="fixed top-0 right-0 h-full w-80 bg-white shadow-xl z-50 md:hidden transform translate-x-0 transition-transform duration-300 ease-in-out"
-          >
-            {/* Close Button */}
-            <div className="flex justify-between items-center p-4 border-b">
+        <div 
+          id="mobile-sidebar"
+          className="fixed top-0 right-0 h-full w-1/3 min-w-[280px] bg-white z-10000 md:hidden border-l-4 border-red-500 shadow-2xl"
+        >
+            {/* Header with Close Button */}
+            <div className="flex justify-between items-center p-4 border-b bg-red-50">
               <h2 className="text-lg font-semibold text-gray-800">Menu</h2>
               <button
                 onClick={() => setMenuOpen(false)}
-                className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                className="p-1 rounded-full hover:bg-red-100 transition-colors"
               >
                 <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -308,107 +290,99 @@ export default function Navbar() {
               </button>
             </div>
 
-            <div className="flex flex-col h-full overflow-y-auto">
-              {/* Search */}
-              <div className="p-4 border-b">
-                <form onSubmit={handleSearch}>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      value={search}
-                      onChange={(e) => setSearch(e.target.value)}
-                      placeholder="Search donors..."
-                      className="w-full rounded-full border border-slate-300 py-2 pl-4 pr-10 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-400"
-                    />
-                    <button
-                      type="submit"
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 hover:text-red-600"
-                    >
-                      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z" />
+            <div className="flex flex-col h-full bg-white">
+              {token && (
+                /* User Info */
+                <div className="p-4 bg-linear-to-r from-red-400 to-red-500 text-white">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
+                      <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
                       </svg>
-                    </button>
+                    </div>
+                    <div>
+                      <p className="font-semibold">{user.userName || 'User'}</p>
+                      <p className="text-sm opacity-90">{user.role || 'user'}</p>
+                    </div>
                   </div>
-                </form>
-              </div>
+                  
+                  {/* Role-based Menu Items */}
+                  <div className="space-y-2">
+                    {menuItems.filter(item => item.title !== 'Logout').map((item) => (
+                      <Link
+                        key={item.title}
+                        href={item.href}
+                        onClick={() => setMenuOpen(false)}
+                        className="flex items-center gap-2 py-2 px-3 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-sm"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d={item.icon} />
+                        </svg>
+                        {item.title}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Navigation Links */}
-              <div className="flex-1 p-4">
-                <ul className="space-y-4">
+              <div className="flex-1 p-4 bg-white">
+                <nav className="space-y-3">
                   {["Home", "Live Donors", "About Us", "Contact Us"].map((item, i) => (
-                    <li key={i}>
-                      <Link
-                        href={
-                          item === "Home"
-                            ? "/"
-                            : item === "Live Donors"
-                            ? "/livedonor"
-                            : item === "About Us"
-                            ? "/about"
-                            : "/contact"
-                        }
-                        onClick={() => setMenuOpen(false)}
-                        className="block py-2 px-3 text-slate-700 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                      >
-                        {item}
-                      </Link>
-                    </li>
+                    <Link
+                      key={i}
+                      href={
+                        item === "Home"
+                          ? "/"
+                          : item === "Live Donors"
+                          ? "/livedonor"
+                          : item === "About Us"
+                          ? "/about"
+                          : "/contact"
+                      }
+                      onClick={() => setMenuOpen(false)}
+                      className="block py-3 px-4 text-gray-700 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors font-medium"
+                    >
+                      {item}
+                    </Link>
                   ))}
-                </ul>
-
-                {/* User Actions */}
-                <div className="mt-8 pt-4 border-t">
-                  {!token ? (
-                    <div className="space-y-3">
+                  
+                  {/* Auth Links in Navigation */}
+                  {!token && (
+                    <>
                       <Link
                         href="/auth/signin"
                         onClick={() => setMenuOpen(false)}
-                        className="block w-full text-center py-2 px-4 text-slate-700 hover:text-red-500 border border-slate-300 rounded-lg transition-colors"
+                        className="block py-3 px-4 text-gray-700 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors font-medium"
                       >
                         Sign In
                       </Link>
                       <Link
                         href="/auth/donorsignup"
                         onClick={() => setMenuOpen(false)}
-                        className="block w-full text-center py-2 px-4 bg-linear-to-r from-red-400 to-red-500 text-white rounded-lg shadow-md hover:from-red-500 hover:to-red-600 transition-colors"
+                        className="block py-3 px-4 text-white bg-linear-to-r from-red-400 to-red-500 hover:from-red-500 hover:to-red-600 rounded-lg transition-colors font-medium"
                       >
                         Become a Donor
                       </Link>
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                        <div className="w-10 h-10 rounded-full bg-red-500 flex items-center justify-center">
-                          <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                          </svg>
-                        </div>
-                        <div>
-                          <p className="font-medium text-gray-800">{user.userName || 'User'}</p>
-                          <p className="text-sm text-gray-600">{user.role || 'user'}</p>
-                        </div>
-                      </div>
-                      
-                      {menuItems.map((item) => (
-                        <Link
-                          key={item.title}
-                          href={item.href}
-                          onClick={() => setMenuOpen(false)}
-                          className="flex items-center gap-3 py-2 px-3 text-slate-700 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" d={item.icon} />
-                          </svg>
-                          {item.title}
-                        </Link>
-                      ))}
-                    </div>
+                    </>
                   )}
-                </div>
+                </nav>
               </div>
+
+              {/* Logout Button */}
+              {token && (
+                <div className="p-4 border-t bg-white">
+                  <Link
+                    href="/logout"
+                    onClick={() => setMenuOpen(false)}
+                    className="block w-full text-center py-3 px-4 text-white bg-linear-to-r from-red-400 to-red-500 hover:from-red-500 hover:to-red-600 rounded-lg transition-colors font-medium"
+                  >
+                    Logout
+                  </Link>
+                </div>
+              )}
             </div>
-          </div>
-        </>
+        </div>
       )}
     </header>
   );

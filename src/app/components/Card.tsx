@@ -79,7 +79,7 @@ export default function DonorCard() {
 
             {/* Make Request Button */}
             <Link
-              href={`/bloodrequest/${donor.donorId}`}
+              href={`/bloodrequest/${donor.donorId}?name=${encodeURIComponent(donor.donorName)}&bloodGroup=${donor.bloodgroup}`}
               className="inline-block w-full rounded-lg bg-linear-to-r from-red-500 to-blue-500 text-white font-semibold py-2 text-sm hover:from-blue-600 hover:to-red-600 transition-all shadow-md"
             >
               Make Request

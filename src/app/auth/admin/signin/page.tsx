@@ -12,10 +12,11 @@ import BloodLoader from "../../../Components/BloodLoader";
 interface LoginFormData {
   email: string;
   password: string;
+
 }
 
 export default function Page() {
-  const [formData, setFormData] = useState<LoginFormData>({ email: "", password: "" });
+  const [formData, setFormData] = useState<LoginFormData>({ email: "", password: ""});
   const [error, setError] = useState("");
   const [isRedirecting, setIsRedirecting] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
@@ -35,7 +36,7 @@ export default function Page() {
     e.preventDefault();
     setError("");
     
-    if (!formData.email || !formData.password) {
+    if (!formData.email || !formData.password ) {
       setError("Please fill in all fields");
       return;
     }
@@ -126,6 +127,7 @@ export default function Page() {
             </label>
           </div>
 
+         
           {/* Submit */}
           <button
             type="submit"
