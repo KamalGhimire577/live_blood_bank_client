@@ -7,8 +7,8 @@ import { ISignInData } from "./signin.type";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { loginUser } from "@/lib/store/auth/authSlice";
 import { Status } from "@/lib/types/type";
-import BloodLoader from "../../Components/BloodLoader";
-import LoginSuccessPopup from "../../Components/LoginSuccessPopup";
+import BloodLoader from "@/app/Components/BloodLoader";
+import LoginSuccessPopup from "@/app/Components/LoginSuccessPopup";
 
 export default function SignIn() {
 
@@ -126,7 +126,7 @@ export default function SignIn() {
 
             <button
               type="submit"
-              className="w-full rounded-md bg-gradient-to-r from-red-500 to-rose-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:from-rose-500 hover:to-red-400 focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-red-500"
+              className="w-full rounded-md bg-linear-to-r from-red-500 to-rose-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:from-rose-500 hover:to-red-400 focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-red-500"
             >
               Sign In
             </button>

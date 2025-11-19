@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import DonorCard from "./Components/Card";
+import DonorCard from "@/app/Components/Card";
 import { useAppSelector } from "@/lib/store/hooks";
 
 export default function Home() {

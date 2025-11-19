@@ -1,12 +1,12 @@
 // collect all slices and store
 
 import { configureStore } from "@reduxjs/toolkit";
-import authSlice from "./auth/authSlice";
-import donorAuthSlice from "./donor/donorSlice"
-import bloodrequestReducer from "./bloodrequest/bloodrequestSlice";
-import userRequestsReducer from "./userRequests/userRequestsSlice";
-import donorRequestsReducer from "./donorRequests/donorRequestsSlice";
-import adminReducer from "./admin/adminSlice";
+import authSlice from "@/lib/store/auth/authSlice";
+import donorAuthSlice from "@/lib/store/donor/donorSlice";
+import bloodrequestReducer from "@/lib/store/bloodrequest/bloodrequestSlice";
+import userRequestsReducer from "@/lib/store/userRequests/userRequestsSlice";
+import donorRequestsReducer from "@/lib/store/donorRequests/donorRequestsSlice";
+import adminReducer from "@/lib/store/admin/adminSlice";
 const store = configureStore({
   reducer: {
     auth: authSlice,

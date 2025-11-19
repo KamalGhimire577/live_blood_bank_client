@@ -6,7 +6,7 @@ import Link from "next/link";
 import { ISignupData } from "./signup.types";
 import { registerUser, setStatus } from "@/lib/store/auth/authSlice";
 import { Status } from "@/lib/types/type";
-import BloodLoader from "../../Components/BloodLoader";
+import BloodLoader from "@/app/Components/BloodLoader";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 
 export default function SignUp() {

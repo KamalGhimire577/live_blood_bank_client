@@ -1,7 +1,7 @@
 import { Status } from "@/lib/types/type";
 import { IDonorData, IDonorInitialState, IEligibleDonorData } from "./donorSlice.types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AppDispatch } from "../store";
+import { AppDispatch } from "@/lib/store/store";
 import API from "@/lib/http/api";
 
 

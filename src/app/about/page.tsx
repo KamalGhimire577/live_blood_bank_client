@@ -6,11 +6,11 @@ import Link from "next/link";
 export default function About() {
   return (
     <>
-      <div className="min-h-screen bg-gradient-to-b from-red-50 to-white text-gray-900">
+      <div className="min-h-screen bg-linear-to-b from-red-50 to-white text-gray-900">
         {/* Hero */}
         <section className="relative flex items-center justify-center py-20 px-6 sm:px-8 lg:px-16">
           <div className="max-w-4xl text-center">
-            <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-red-600 to-rose-500 shadow-2xl">
+            <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-linear-to-br from-red-600 to-rose-500 shadow-2xl">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"

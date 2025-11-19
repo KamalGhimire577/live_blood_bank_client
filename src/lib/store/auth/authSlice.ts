@@ -8,7 +8,7 @@ import {
 } from "./authSlice.types";
 import { Status } from "@/lib/types/type";
 import API from "@/lib/http/api";
-import { AppDispatch } from "../store";
+import { AppDispatch } from "@/lib/store/store";
 
 
 const initialState: IInitialState = {

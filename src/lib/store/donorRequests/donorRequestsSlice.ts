@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import API from "@/lib/http/api";
-import { AppDispatch } from "../store";
+import { AppDispatch } from "@/lib/store/store";
 import {
   IDonorRequestsState,
   IDonorRequestsResponse,

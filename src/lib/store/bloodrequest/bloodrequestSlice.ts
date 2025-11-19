@@ -4,7 +4,7 @@ import { createSlice,PayloadAction } from "@reduxjs/toolkit";
 import { IInitialBloodData, IBloodRequestData } from "./bloodrequestSlice.types";
 import { Status } from "@/lib/types/type";
 import API from "@/lib/http/api";
-import { AppDispatch } from "../store";
+import { AppDispatch } from "@/lib/store/store"
 
 enum BloodGroup {
   A_POSITIVE = "A+",

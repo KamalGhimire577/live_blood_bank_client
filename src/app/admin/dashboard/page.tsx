@@ -10,7 +10,7 @@ import {
   deleteUser,
   deleteDonor,
   updateBloodRequestStatus
-} from '../../../lib/store/admin/adminSlice';
+} from '@/lib/store/admin/adminSlice';
 
 export default function Page() {
   const [activeSection, setActiveSection] = useState("dashboard");
