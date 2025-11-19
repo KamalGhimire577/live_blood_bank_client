@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { loginAdmin } from "@/lib/store/auth/authSlice";
 import { RootState, AppDispatch } from "@/lib/store/store";
 import { Status } from "@/lib/types/type";
-import BloodLoader from "../../../Components/BloodLoader";
+import BloodLoader from "../../../Components/BloodLoader.jsx";
 
 
 interface LoginFormData {
@@ -56,7 +56,7 @@ export default function Page() {
   };
   if (isRedirecting) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-linear-to-br from-rose-100 via-red-100 to-red-200">
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-rose-100 via-red-100 to-red-200">
         <div className="text-center">
           <BloodLoader />
           <p className="mt-4 text-red-600 font-semibold">Redirecting to Admin Dashboard...</p>
@@ -66,7 +66,7 @@ export default function Page() {
   }
   
   return (
-    <div className="flex items-center justify-center min-h-screen bg-linear-to-br from-rose-100 via-red-100 to-red-200 px-4">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-rose-100 via-red-100 to-red-200 px-4">
       <div className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 md:p-10">
         {/* Glowing accents */}
         <div className="absolute -top-10 -right-10 w-40 h-40 bg-red-400 rounded-full blur-2xl opacity-30" />
@@ -132,7 +132,7 @@ export default function Page() {
           <button
             type="submit"
             disabled={status === Status.LOADING}
-            className="w-full bg-linear-to-r from-red-600 to-rose-500 text-white font-semibold py-2.5 rounded-lg shadow-md 
+            className="w-full bg-gradient-to-r from-red-600 to-rose-500 text-white font-semibold py-2.5 rounded-lg shadow-md 
             hover:from-rose-500 hover:to-red-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {status === Status.LOADING ? "Logging in..." : "Login"}

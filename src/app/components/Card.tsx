@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { fetchAllEligibleDonors } from "@/lib/store/donor/donorSlice";
 import { Status } from "@/lib/types/type";
-import BloodLoader from "./BloodLoader";
+import BloodLoader from "./BloodLoader.jsx";
 import { provinces, districts, localLevels } from "@/data/nepalLocations";
 
 export default function DonorCard() {
@@ -39,7 +39,7 @@ export default function DonorCard() {
           className="w-full bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-red-100"
         >
           {/* Header Image */}
-          <div className="relative w-full h-32 bg-linear-to-r from-red-500 to-blue-500 rounded-t-xl flex items-center justify-center">
+          <div className="relative w-full h-32 bg-gradient-to-r from-red-500 to-blue-500 rounded-t-xl flex items-center justify-center">
             <Image
               src="/donor.jpeg"
               alt="Donor Image"
@@ -57,7 +57,7 @@ export default function DonorCard() {
 
             {/* Blood Group */}
             <div className="mt-4 flex justify-center">
-              <span className="text-sm font-semibold bg-linear-to-r from-red-500 to-blue-500 text-white px-3 py-1 rounded-full shadow-md">
+              <span className="text-sm font-semibold bg-gradient-to-r from-red-500 to-blue-500 text-white px-3 py-1 rounded-full shadow-md">
                 Blood Group:{" "}
                 <span className="font-bold ml-1">{donor.bloodgroup}</span>
               </span>
@@ -80,7 +80,7 @@ export default function DonorCard() {
             {/* Make Request Button */}
             <Link
               href={`/bloodrequest/${donor.donorId}?name=${encodeURIComponent(donor.donorName)}&bloodGroup=${donor.bloodgroup}`}
-              className="inline-block w-full rounded-lg bg-linear-to-r from-red-500 to-blue-500 text-white font-semibold py-2 text-sm hover:from-blue-600 hover:to-red-600 transition-all shadow-md"
+              className="inline-block w-full rounded-lg bg-gradient-to-r from-red-500 to-blue-500 text-white font-semibold py-2 text-sm hover:from-blue-600 hover:to-red-600 transition-all shadow-md"
             >
               Make Request
             </Link>

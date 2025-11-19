@@ -6,7 +6,7 @@ import Link from "next/link";
 import { ISignupData } from "./signup.types";
 import { registerUser, setStatus } from "@/lib/store/auth/authSlice";
 import { Status } from "@/lib/types/type";
-import BloodLoader from "../../Components/BloodLoader";
+import BloodLoader from "../../Components/BloodLoader.jsx";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 
 export default function SignUp() {
@@ -153,7 +153,7 @@ export default function SignUp() {
                 {/* Submit */}
                 <button
                   type="submit"
-                  className={`w-full rounded-md bg-linear-to-r from-red-600 to-rose-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200`}
+                  className={`w-full rounded-md bg-gradient-to-r from-red-600 to-rose-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200`}
                 >Sign Up</button>
               </form>
 
