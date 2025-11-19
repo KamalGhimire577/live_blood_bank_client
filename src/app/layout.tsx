@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
 import Navbar from "./Components/Navbar";
-import Footer from "./Components/Footer.jsx";
+import Footer from "./Components/Footer";
 import { ReduxProvider } from "@/lib/store/provider";
 import AppInitializer from "./Components/AppInitializer";
 

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { fetchAllEligibleDonors } from "@/lib/store/donor/donorSlice";
 import { Status } from "@/lib/types/type";
-import BloodLoader from "./BloodLoader.jsx";
+import BloodLoader from "./BloodLoader";
 import { provinces, districts, localLevels } from "@/data/nepalLocations";
 
 export default function DonorCard() {
