@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { loginAdmin } from "@/lib/store/auth/authSlice";
 import { RootState, AppDispatch } from "@/lib/store/store";
 import { Status } from "@/lib/types/type";
-import BloodLoader from "@/app/Components/BloodLoader";
+import BloodLoader from "@/app/components/BloodLoader";
 
 
 interface LoginFormData {

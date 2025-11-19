@@ -5,7 +5,7 @@ import { provinces, districts, localLevels, Province, District, LocalLevel } fro
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { setStatus, registerDonor } from "@/lib/store/donor/donorSlice";
 import { Status } from "@/lib/types/type";
-import BloodLoader from "@/app/Components/BloodLoader";
+import BloodLoader from "@/app/components/BloodLoader";
 interface FormDataType {
   fullName: string;
   email: string;

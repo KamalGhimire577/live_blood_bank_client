@@ -7,8 +7,8 @@ import { ISignInData } from "./signin.type";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { loginUser } from "@/lib/store/auth/authSlice";
 import { Status } from "@/lib/types/type";
-import BloodLoader from "@/app/Components/BloodLoader";
-import LoginSuccessPopup from "@/app/Components/LoginSuccessPopup";
+import BloodLoader from "@/app/components/BloodLoader";
+import LoginSuccessPopup from "@/app/components/LoginSuccessPopup";
 
 export default function SignIn() {
 

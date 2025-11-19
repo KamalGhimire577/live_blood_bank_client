@@ -4,10 +4,10 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/app/Components/Navbar";
-import Footer from "@/app/Components/Footer";
+import Navbar from "@/app/components/Navbar";
+import Footer from "@/app/components/Footer";
 import { ReduxProvider } from "@/lib/store/provider";
-import AppInitializer from "@/app/Components/AppInitializer";
+import AppInitializer from "@/app/components/AppInitializer";
 
 const poppins = Poppins({
   weight: "400",
